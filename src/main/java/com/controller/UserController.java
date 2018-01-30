@@ -21,6 +21,4 @@ public class UserController {
     public @ResponseBody List<User> getShopInJSON() {
         return userService.findAll();
     }
-
-
 }
