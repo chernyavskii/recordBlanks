@@ -29,4 +29,9 @@ public class AgentController {
     public @ResponseBody Agent addAgentInJSON(@RequestParam String firstName, @RequestParam String middleName, @RequestParam String lastName, @RequestParam String organization, @RequestParam String position) {
         return agentService.addAgent(firstName, middleName, lastName, organization, position);
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public @ResponseBody Agent deleteAgentInJSON(@PathVariable("id") Long id) {
+        return agentService.deleteAgent(id);
+    }
 }

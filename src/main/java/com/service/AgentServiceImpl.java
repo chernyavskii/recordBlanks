@@ -26,13 +26,19 @@ public class AgentServiceImpl implements AgentService {
     public Agent addAgent(String firstName, String middleName, String lastName, String organization, String position)
     {
         Agent agent = new Agent();
-        agent.setId(2l);
         agent.setFirstName(firstName);
         agent.setMiddleName(middleName);
         agent.setLastName(lastName);
         agent.setOrganization(organization);
         agent.setPosition(position);
-        agentDAO.save(agent);
+        return agentDAO.save(agent);
+    }
+
+    public Agent deleteAgent(Long id)
+    {
+        Agent agent = new Agent();
+        agent = agentDAO.findOne(id);
+        agentDAO.delete(id);
         return agent;
     }
 }
