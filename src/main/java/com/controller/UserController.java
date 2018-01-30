@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
+@RequestMapping(value = "users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/top", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<User> getShopInJSON() {
         return userService.findAll();
     }
+
+
 }
