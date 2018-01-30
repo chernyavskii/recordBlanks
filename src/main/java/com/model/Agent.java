@@ -5,7 +5,7 @@ import java.util.List;
 
 @Entity
 public class Agent {
-    private int id;
+    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -15,11 +15,11 @@ public class Agent {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -71,34 +71,6 @@ public class Agent {
 
     public void setPosition(String position) {
         this.position = position;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Agent agent = (Agent) o;
-
-        if (id != agent.id) return false;
-        if (firstName != null ? !firstName.equals(agent.firstName) : agent.firstName != null) return false;
-        if (middleName != null ? !middleName.equals(agent.middleName) : agent.middleName != null) return false;
-        if (lastName != null ? !lastName.equals(agent.lastName) : agent.lastName != null) return false;
-        if (organization != null ? !organization.equals(agent.organization) : agent.organization != null) return false;
-        if (position != null ? !position.equals(agent.position) : agent.position != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (organization != null ? organization.hashCode() : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
-        return result;
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
