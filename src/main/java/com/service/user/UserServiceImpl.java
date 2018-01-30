@@ -1,4 +1,4 @@
-package com.service;
+package com.service.user;
 
 import com.dao.UserDAO;
 import com.model.User;
@@ -17,6 +17,14 @@ public class UserServiceImpl implements UserService {
 
     public List<User> findAll() {
         return userDAO.findAll();
+    }
+
+    public User registrationTest(String username, String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        userDAO.save(user);
+        return user;
     }
 
 }
