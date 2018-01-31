@@ -21,7 +21,7 @@ public class AgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public @ResponseBody Agent getAgentByIdInJSON(@PathVariable("id") Long id) {
+    public @ResponseBody Object getAgentByIdInJSON(@PathVariable("id") Long id) {
         return agentService.findById(id);
     }
 
@@ -31,7 +31,7 @@ public class AgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody Agent deleteAgentInJSON(@PathVariable("id") Long id) {
+    public @ResponseBody Object deleteAgentInJSON(@PathVariable("id") Long id) {
         return agentService.deleteAgent(id);
     }
 
