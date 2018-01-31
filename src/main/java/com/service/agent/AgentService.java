@@ -7,8 +7,8 @@ import java.util.List;
 public interface AgentService {
     List<Agent> findAll();
     Object findById(Long id);
-    Agent addAgent(Agent agent);
+    Object addAgent(Agent agent);
     Object deleteAgent(Long id);
-    Agent updateAgent(Long id, Agent agent);
+    Object updateAgent(Long id, Agent agent);
 }
 

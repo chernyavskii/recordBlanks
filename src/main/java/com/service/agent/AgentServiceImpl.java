@@ -25,14 +25,18 @@ public class AgentServiceImpl implements AgentService {
         agnt = agentDAO.findOne(id);
         if(agnt == null)
         {
-            return (new Error("Null value", "null_value", 400));
+            return (new Error("Entity not found", "entity_not_found", 404));
         }
         return agnt;
     }
 
-    public Agent addAgent(Agent agent)
+    public Object addAgent(Agent agent)
     {
         Agent agnt = new Agent();
+        if(agent.getFirstName() == "" || agent.getMiddleName() == "" || agent.getLastName() == "" || agent.getOrganization() == "" || agent.getPosition() == "")
+        {
+            return (new Error("Null value", "null_value", 400));
+        }
         agnt.setFirstName(agent.getFirstName());
         agnt.setMiddleName(agent.getMiddleName());
         agnt.setLastName(agent.getLastName());
@@ -47,16 +51,24 @@ public class AgentServiceImpl implements AgentService {
         agnt = agentDAO.findOne(id);
         if(agnt == null)
         {
-            return (new Error("Null value", "null_value", 400));
+            return (new Error("Entity not found", "entity_not_found", 404));
         }
         agentDAO.delete(id);
         return agnt;
     }
 
-    public Agent updateAgent(Long id, Agent agent)
+    public Object updateAgent(Long id, Agent agent)
     {
         Agent agnt = new Agent();
         agnt = agentDAO.findOne(id);
+        if(agnt == null)
+        {
+            return (new Error("Entity not found", "entity_not_found", 404));
+        }
+        if(agent.getFirstName() == "" || agent.getMiddleName() == "" || agent.getLastName() == "" || agent.getOrganization() == "" || agent.getPosition() == "")
+        {
+            return (new Error("Null value", "null_value", 400));
+        }
         agnt.setFirstName(agent.getFirstName());
         agnt.setMiddleName(agent.getMiddleName());
         agnt.setLastName(agent.getLastName());
