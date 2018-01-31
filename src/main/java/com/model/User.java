@@ -13,7 +13,7 @@ public class User {
     private Set<Role> roles;
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -51,7 +51,7 @@ public class User {
         this.agents = agents;
     }
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     public Set<Role> getRoles() {
         return roles;
     }

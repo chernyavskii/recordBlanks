@@ -46,6 +46,28 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         userDAO.save(user);
+
+       /* Set<User> users = new HashSet<User>();
+        users.add(userDAO.findOne(user.getId()));
+
+        Role ADMIN = roleDAO.findOne(1L);
+        ADMIN.setUsers(users);*/
+
+        Set<Role> roleHashSet = new HashSet<Role>();
+        roleHashSet = user.getRoles();
+        for(Role role : roleHashSet){
+            role.getUsers().add(user);
+            roleDAO.save(role);
+        }
+       /* roomSet = user.getRooms();
+        for(Room room : roomSet){
+            room.setCurrent_count(room.getCurrent_count()+1);
+            roomDao.save(room);
+        }
+        userDao.save(user);*/
+
+/*
+        roleDAO.save(ADMIN);*/
 /**
  return user;
  */
