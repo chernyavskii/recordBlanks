@@ -2,20 +2,21 @@ package com.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Role {
-    private int id;
+    private Long id;
     private String name;
-    private List<User> users;
+    private Set<User> users;
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -29,33 +30,22 @@ public class Role {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Role role = (Role) o;
-
-        if (id != role.id) return false;
-        if (name != null ? !name.equals(role.name) : role.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
-    }
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserRole",schema = "testDB", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

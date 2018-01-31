@@ -25,8 +25,6 @@
           <unit-entry name="session-factory.xml" value="9818ae32-3d9e-48c6-9434-7197884e6dbe" />
         </datasource-map>
         <naming-strategy-map />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/session-factory.xml" />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/sg.xml" />
       </configuration>
     </facet>
   </component>

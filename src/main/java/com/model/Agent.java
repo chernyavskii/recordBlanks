@@ -2,6 +2,7 @@ package com.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Agent {
@@ -11,7 +12,7 @@ public class Agent {
     private String lastName;
     private String organization;
     private String position;
-    private List<User> users;
+    private Set<User> users;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -75,11 +76,24 @@ public class Agent {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserAgent", schema = "testDB", joinColumns = @JoinColumn(name = "agent_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", organization='" + organization + '\'' +
+                ", position='" + position + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

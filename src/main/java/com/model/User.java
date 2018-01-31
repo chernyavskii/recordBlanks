@@ -2,22 +2,23 @@ package com.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User {
-    private int id;
+    private Long id;
     private String username;
     private String password;
-    private List<Agent> agents;
-    private List<Role> roles;
+    private Set<Agent> agents;
+    private Set<Role> roles;
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,43 +42,32 @@ public class User {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        if (id != user.id) return false;
-        if (username != null ? !username.equals(user.username) : user.username != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        return result;
-    }
-
     @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    public List<Agent> getAgents() {
+    public Set<Agent> getAgents() {
         return agents;
     }
 
-    public void setAgents(List<Agent> agents) {
+    public void setAgents(Set<Agent> agents) {
         this.agents = agents;
     }
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    public List<Role> getRoles() {
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", agents=" + agents +
+                ", roles=" + roles +
+                '}';
     }
 }

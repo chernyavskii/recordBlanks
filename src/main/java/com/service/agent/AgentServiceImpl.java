@@ -1,4 +1,4 @@
-package com.service;
+package com.service.agent;
 
 import com.dao.AgentDAO;
 import com.model.Agent;
