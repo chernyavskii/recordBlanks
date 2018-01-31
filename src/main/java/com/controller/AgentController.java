@@ -21,17 +21,22 @@ public class AgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public @ResponseBody Agent getAgentByIdInJSON(@PathVariable("id") Long id) {
+    public @ResponseBody Object getAgentByIdInJSON(@PathVariable("id") Long id) {
         return agentService.findById(id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public @ResponseBody Agent addAgentInJSON(@RequestParam String firstName, @RequestParam String middleName, @RequestParam String lastName, @RequestParam String organization, @RequestParam String position) {
-        return agentService.addAgent(firstName, middleName, lastName, organization, position);
+    public @ResponseBody Agent addAgentInJSON(@RequestBody Agent agent) {
+        return agentService.addAgent(agent);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody Agent deleteAgentInJSON(@PathVariable("id") Long id) {
+    public @ResponseBody Object deleteAgentInJSON(@PathVariable("id") Long id) {
         return agentService.deleteAgent(id);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public @ResponseBody Agent updateAgentInJSON(@PathVariable("id") Long id, @RequestBody Agent agent) {
+        return agentService.updateAgent(id, agent);
     }
 }
