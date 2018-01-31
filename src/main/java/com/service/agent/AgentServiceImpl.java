@@ -1,11 +1,11 @@
 package com.service.agent;
 
 import com.dao.AgentDAO;
+import com.utils.Error;
 import com.model.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -19,26 +19,62 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.findAll();
     }
 
-    public Agent findById(Long id) {
-        return agentDAO.findOne(id);
+    public Object findById(Long id)
+    {
+        Agent agnt = new Agent();
+        agnt = agentDAO.findOne(id);
+        if(agnt == null)
+        {
+            return (new Error("Entity not found", "entity_not_found", 404));
+        }
+        return agnt;
     }
 
-    public Agent addAgent(String firstName, String middleName, String lastName, String organization, String position)
+    public Object addAgent(Agent agent)
     {
-        Agent agent = new Agent();
-        agent.setFirstName(firstName);
-        agent.setMiddleName(middleName);
-        agent.setLastName(lastName);
-        agent.setOrganization(organization);
-        agent.setPosition(position);
-        return agentDAO.save(agent);
+        Agent agnt = new Agent();
+        if(agent.getFirstName() == "" || agent.getMiddleName() == "" || agent.getLastName() == "" || agent.getOrganization() == "" || agent.getPosition() == "")
+        {
+            return (new Error("Null value", "null_value", 400));
+        }
+        agnt.setFirstName(agent.getFirstName());
+        agnt.setMiddleName(agent.getMiddleName());
+        agnt.setLastName(agent.getLastName());
+        agnt.setOrganization(agent.getOrganization());
+        agnt.setPosition(agent.getPosition());
+        return agentDAO.save(agnt);
     }
 
-    public Agent deleteAgent(Long id)
+    public Object deleteAgent(Long id)
     {
-        Agent agent = new Agent();
-        agent = agentDAO.findOne(id);
+        Agent agnt = new Agent();
+        agnt = agentDAO.findOne(id);
+        if(agnt == null)
+        {
+            return (new Error("Entity not found", "entity_not_found", 404));
+        }
         agentDAO.delete(id);
-        return agent;
+        return agnt;
+    }
+
+    public Object updateAgent(Long id, Agent agent)
+    {
+        Agent agnt = new Agent();
+        agnt = agentDAO.findOne(id);
+        if(agnt == null)
+        {
+            return (new Error("Entity not found", "entity_not_found", 404));
+        }
+        if(agent.getFirstName() == "" || agent.getMiddleName() == "" || agent.getLastName() == "" || agent.getOrganization() == "" || agent.getPosition() == "")
+        {
+            return (new Error("Null value", "null_value", 400));
+        }
+        agnt.setFirstName(agent.getFirstName());
+        agnt.setMiddleName(agent.getMiddleName());
+        agnt.setLastName(agent.getLastName());
+        agnt.setOrganization(agent.getOrganization());
+        agnt.setPosition(agent.getPosition());
+        agentDAO.save(agnt);
+        return agnt;
     }
 }

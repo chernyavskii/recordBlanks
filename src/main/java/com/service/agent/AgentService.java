@@ -6,8 +6,9 @@ import java.util.List;
 
 public interface AgentService {
     List<Agent> findAll();
-    Agent findById(Long id);
-    Agent addAgent(String firstName, String middleName, String lastName, String organization, String position);
-    Agent deleteAgent(Long id);
+    Object findById(Long id);
+    Object addAgent(Agent agent);
+    Object deleteAgent(Long id);
+    Object updateAgent(Long id, Agent agent);
 }
 

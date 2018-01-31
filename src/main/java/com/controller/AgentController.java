@@ -26,7 +26,7 @@ public class AgentController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public @ResponseBody Agent addAgentInJSON(@RequestBody Agent agent) {
+    public @ResponseBody Object addAgentInJSON(@RequestBody Agent agent) {
         return agentService.addAgent(agent);
     }
 
@@ -36,7 +36,7 @@ public class AgentController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public @ResponseBody Agent updateAgentInJSON(@PathVariable("id") Long id, @RequestBody Agent agent) {
+    public @ResponseBody Object updateAgentInJSON(@PathVariable("id") Long id, @RequestBody Agent agent) {
         return agentService.updateAgent(id, agent);
     }
 }
