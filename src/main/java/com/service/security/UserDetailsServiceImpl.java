@@ -30,9 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userDAO.findByUsername(username);
         Object o = getClass();
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
-/*
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-*/
+
         for(Role role : user.getRoles()){
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }

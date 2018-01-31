@@ -22,6 +22,7 @@
       <configuration>
         <datasource-map>
           <unit-entry name="a.xml" value="5fa21d4e-c822-4559-81cd-7a98a4a76ce3" />
+          <unit-entry name="fdsfdsf.xml" value="f96f6088-61b7-4873-94d5-9211db3dd2ff" />
           <unit-entry name="session-factory.xml" value="9818ae32-3d9e-48c6-9434-7197884e6dbe" />
         </datasource-map>
         <naming-strategy-map />
