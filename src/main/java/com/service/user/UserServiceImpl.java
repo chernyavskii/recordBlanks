@@ -46,9 +46,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         userDAO.save(user);
-/*
-        return user;
-*/
+/**
+ return user;
+ */
     }
 
     public User findByUsername(String username) {
