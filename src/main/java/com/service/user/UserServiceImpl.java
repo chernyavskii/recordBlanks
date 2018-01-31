@@ -41,11 +41,11 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-        Set<Role> roles = new HashSet<Role>();
+       /* Set<Role> roles = new HashSet<Role>();
         roles.add(roleDAO.findOne(1L));
         user.setRoles(roles);
 
-        userDAO.save(user);
+        userDAO.save(user);*/
 /**
  return user;
  */

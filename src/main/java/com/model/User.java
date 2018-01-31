@@ -6,19 +6,20 @@ import java.util.Set;
 
 @Entity
 public class User {
-    private Long id;
+    private int id;
     private String username;
     private String password;
-    private Set<Agent> agents;
-    private Set<Role> roles;
+    private List<Agent> agents;
+    private List<Role> roles;
+    private Set<Document> documents;
 
     @Id
     @Column(name = "id")
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -42,32 +43,52 @@ public class User {
         this.password = password;
     }
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    public Set<Agent> getAgents() {
-        return agents;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public void setAgents(Set<Agent> agents) {
-        this.agents = agents;
-    }
+        User user = (User) o;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    public Set<Role> getRoles() {
-        return roles;
-    }
+        if (id != user.id) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+        return true;
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", agents=" + agents +
-                ", roles=" + roles +
-                '}';
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
+    }
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
     }
 }
