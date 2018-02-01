@@ -23,9 +23,4 @@ public class UserController {
         return userService.findAll();
     }
 
-    @RequestMapping(value = "/reg", method = RequestMethod.POST)
-    public @ResponseBody User registrationTEST(@RequestParam("username") String username, @RequestParam("password") String password) {
-        getClass();
-        return userService.registrationTest(username,password);
-    }
-}
+   }

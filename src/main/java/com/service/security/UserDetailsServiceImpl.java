@@ -3,9 +3,7 @@ package com.service.security;
 import com.dao.UserDAO;
 import com.model.Role;
 import com.model.User;
-import com.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
-/*import java.util.Set;*/
+
 
 @Service
 @Transactional
@@ -25,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserDAO userDAO;
 
-    @Transactional/*(readOnly = true)*/
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDAO.findByUsername(username);
         Object o = getClass();

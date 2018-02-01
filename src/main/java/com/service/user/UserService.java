@@ -8,7 +8,7 @@ import java.util.Set;
 public interface UserService {
     List<User> findAll();
     User registrationTest(String username, String password);
-    void save(User user); /////////
+    /*void*/User save(User user); /////////
     User findByUsername(String username);
 }
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -27,10 +28,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-        authenticationManager.authenticate(token);
-        if(token.isAuthenticated()){
-            SecurityContextHolder.getContext().setAuthentication(token);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        authenticationManager.authenticate(authenticationToken);
+
+        if (authenticationToken.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
     }
 }

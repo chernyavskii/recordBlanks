@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void save(User user) {
+    public /*void*/User save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         Set<Role> roles = new HashSet<Role>();
@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
             role.getUsers().add(user);
             roleDAO.save(role);
         }
+        return user;
     }
 
     public User findByUsername(String username) {
