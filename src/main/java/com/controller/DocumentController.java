@@ -2,11 +2,10 @@ package com.controller;
 
 import com.model.Document;
 import com.service.document.DocumentService;
+import com.serviceDoc.TNService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
@@ -18,6 +17,8 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
+
+    private TNService TNsrv = new TNService();
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<Document> getDocumentsInJSON() {
@@ -37,5 +38,10 @@ public class DocumentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody Object deleteDocumentInJSON(@PathVariable("id") Long id) {
         return documentService.deleteDocument(id);
+    }
+
+    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    public @ResponseBody void writeToFile(@RequestParam String name) throws IOException {
+        TNsrv.writeToFile(name);
     }
 }
