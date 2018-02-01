@@ -4,7 +4,6 @@ import com.model.User;
 import com.service.security.SecurityService;
 import com.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,34 +20,19 @@ public class IndexController {
     @Autowired
     private SecurityService securityService;
 
-    /*@RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public*//* @ResponseBody*//* String registration(@RequestBody User user) {
-        userService.save(user);
-        securityService.autoLogin(user.getUsername(), user.getPassword());
-        getClass();
-*//*
-        return "redirect:/ttt";
-
-*//*
-        return "redirect:/res";
-    }*/
-
-  /*  @RequestMapping(value = "/", method = RequestMethod.POST)
-    public @ResponseBody Object addAgentInJSON(@RequestBody Agent agent) {
-        return agentService.addAgent(agent);
-    }*/
-
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public /*@ResponseBody*/ String testRegistration(@RequestBody User user){
-        getClass();
+    public @ResponseBody Object testRegistration(@RequestBody User user){
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPassword());
-        return  "redirect:/welcome";
+
+        // Postman : под адресной строкой Authorization -> Username & Password
+
+        return  "{\"success\":true}";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
-         getClass();
+        getClass();
         return "login";
     }
 
