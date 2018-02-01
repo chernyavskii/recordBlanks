@@ -7,6 +7,7 @@ import java.util.Set;
 @Entity
 public class Document {
     private Long id;
+    private String name;
     private byte[] document;
     private Set<User> users;
 
@@ -22,6 +23,16 @@ public class Document {
     }
 
     @Basic
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Basic
     @Column(name = "document")
     public byte[] getDocument() {
         return document;
@@ -31,7 +42,7 @@ public class Document {
         this.document = document;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserDocument", schema = "testDB", joinColumns = @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
     public Set<User> getUsers() {
         return users;
