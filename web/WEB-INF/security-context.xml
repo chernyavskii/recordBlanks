@@ -14,39 +14,19 @@
         <csrf disabled="true"/>
 
     </http>
-    <!--<beans:bean id="sss"
-                class="com.service.security.myBasicAuthenticationEntryPoint"></beans:bean>-->
-   <!-- <http auto-config="true" use-expressions="true" > &lt;!&ndash; use-expressions="true"&ndash;&gt; &lt;!&ndash;create-session="stateless"&ndash;&gt;
-&lt;!&ndash;
-        <intercept-url pattern="/" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
-&ndash;&gt;
-        <intercept-url pattern="/users/" access="hasRole('ROLE_ADMIN')"/>
 
-        <intercept-url pattern="/welcome" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
-        <intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
-
-        <http-basic />
-&lt;!&ndash;
-        <http-basic />
-&ndash;&gt;
-
-
-        <csrf disabled="true"/>
-
-      &lt;!&ndash;  <form-login login-page="/login" default-target-url="/welcome" authentication-failure-url="/login?error"
-                    username-parameter="username" password-parameter="password"/>&ndash;&gt;
-
-        <logout logout-success-url="/login?logout"/>
-    </http>-->
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="userDetailsServiceImpl">
             <password-encoder ref="encoder"></password-encoder>
         </authentication-provider>
     </authentication-manager>
 
+    <beans:bean id="userDAO" class="com.dao.UserDAO"></beans:bean>
+
     <beans:bean id="userDetailsServiceImpl"
-                class="com.service.security.UserDetailsServiceImpl"></beans:bean>
+                class="com.service.security.UserDetailsServiceImpl">
+        <beans:property name="userDAO" ref="userDAO"></beans:property>
+    </beans:bean>
 
     <beans:bean id="encoder"
                 class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">

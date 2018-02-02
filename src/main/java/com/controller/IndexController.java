@@ -21,11 +21,11 @@ public class IndexController {
     private SecurityService securityService;
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public @ResponseBody Object testRegistration(@RequestBody User user){
+    public /*@ResponseBody*/ Object testRegistration(@RequestBody User user){
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPassword());
 
-        return  "{\"success\":true}";
+        return  user /*"{\"success\":true}"*/;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)

@@ -17,30 +17,32 @@ public class SecurityServiceImpl implements SecurityService {
     private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    public String findUser() {
-        Object user = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        if(user instanceof UserDetails){
-            return ((UserDetails)user).getUsername();
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    public String findLoggedInUsername() {
+        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (userDetails instanceof UserDetails) {
+            return ((UserDetails) userDetails).getUsername();
         }
+
         return null;
     }
 
-    public void autoLogin(String username, String password)  {
+    @Override
+    public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-        try {
-            authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        }
-        catch (Exception e){
-          e.getMessage();
-        }
-        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        authenticationManager.authenticate(authenticationToken);
+
+        if (authenticationToken.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            logger.debug(String.format("Successfully %s auto logged in", username));
         }
     }
 }

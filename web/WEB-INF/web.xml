@@ -10,6 +10,7 @@
             /WEB-INF/applicationContext.xml
             /WEB-INF/security-context.xml
             /WEB-INF/data-context.xml
+            /WEB-INF/appconfig-root.xml
         </param-value>
     </context-param>
 
