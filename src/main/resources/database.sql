@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `Agent` (
   `organization` varchar(50) NOT NULL DEFAULT '0',
   `position` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table testDB.Role
@@ -28,16 +28,16 @@ CREATE TABLE IF NOT EXISTS `Role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table testDB.User
 CREATE TABLE IF NOT EXISTS `User` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL DEFAULT '0',
-  `password` varchar(50) NOT NULL DEFAULT '0',
+  `password` varchar(200) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table testDB.UserAgent
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `UserAgent` (
   KEY `FK_UserAgent_Agent` (`agent_id`),
   CONSTRAINT `FK_UserAgent_Agent` FOREIGN KEY (`agent_id`) REFERENCES `Agent` (`id`),
   CONSTRAINT `FK_UserAgent_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 -- Dumping structure for table testDB.UserRole
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `UserRole` (
   KEY `FK_UserRole_Role` (`role_id`),
   CONSTRAINT `FK_UserRole_Role` FOREIGN KEY (`role_id`) REFERENCES `Role` (`id`),
   CONSTRAINT `FK_UserRole_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

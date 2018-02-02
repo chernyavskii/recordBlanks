@@ -37,7 +37,7 @@ public class SecurityServiceImpl implements SecurityService {
             authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         }
         catch (Exception e){
-          System.out.println("MISHA"+e.getCause());
+          e.getMessage();
         }
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

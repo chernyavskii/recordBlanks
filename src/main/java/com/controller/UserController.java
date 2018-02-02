@@ -20,6 +20,7 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<User> getShopInJSON() {
+
         return userService.findAll();
     }
 

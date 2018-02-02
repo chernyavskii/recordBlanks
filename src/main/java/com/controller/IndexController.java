@@ -25,8 +25,6 @@ public class IndexController {
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPassword());
 
-        // Postman : под адресной строкой Authorization -> Username & Password
-
         return  "{\"success\":true}";
     }
 
