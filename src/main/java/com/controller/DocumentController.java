@@ -2,12 +2,10 @@ package com.controller;
 
 import com.model.Document;
 import com.service.document.DocumentService;
-import com.serviceDoc.TNService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -17,8 +15,6 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
-
-    private TNService TNsrv = new TNService();
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<Document> getDocumentsInJSON() {
@@ -41,7 +37,7 @@ public class DocumentController {
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public @ResponseBody void writeToFile(@RequestParam String name) throws IOException {
-        TNsrv.writeToFile(name);
+    public @ResponseBody Object writeToFile(@RequestParam String name) throws IOException {
+        return documentService.writeToFile(name);
     }
 }

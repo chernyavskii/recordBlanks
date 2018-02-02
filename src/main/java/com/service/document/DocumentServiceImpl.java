@@ -1,25 +1,17 @@
 package com.service.document;
 
-import com.dao.AgentDAO;
 import com.dao.DocumentDAO;
-import com.model.Agent;
 import com.model.Document;
-import com.service.agent.AgentService;
 import com.utils.Error;
-import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.support.StandardTypeComparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 @Service
@@ -68,5 +60,19 @@ public class DocumentServiceImpl implements DocumentService {
         }
         documentDAO.delete(id);
         return doc;
+    }
+
+    public Object writeToFile(String name) throws IOException
+    {
+        File file = new File(getClass().getClassLoader().getResource("files/tn.xls").getFile());
+        FileInputStream inputStream = new FileInputStream(file);
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheetAt(0);
+        sheet.getRow(29).getCell(0).setCellValue(name);
+        FileOutputStream out = new FileOutputStream(file);
+        workbook.write(out);
+        out.close();
+        byte[] data = Files.readAllBytes(file.toPath());
+        return this.addDocument(data, file.getName());
     }
 }
