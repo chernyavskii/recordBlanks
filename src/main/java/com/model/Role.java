@@ -1,5 +1,7 @@
 package com.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +34,7 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserRole",schema = "testDB", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
+    @JsonIgnore
     public Set<User> getUsers() {
         return users;
     }

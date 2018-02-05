@@ -1,5 +1,7 @@
 package com.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +14,7 @@ public class Agent {
     private String lastName;
     private String organization;
     private String position;
+
     private Set<User> users;
 
     @Id
@@ -76,6 +79,7 @@ public class Agent {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserAgent", schema = "testDB", joinColumns = @JoinColumn(name = "agent_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @JsonIgnore
     public Set<User> getUsers() {
         return users;
     }

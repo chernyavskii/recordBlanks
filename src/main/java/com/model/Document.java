@@ -1,5 +1,7 @@
 package com.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Set;
@@ -43,6 +45,7 @@ public class Document {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "UserDocument", schema = "testDB", joinColumns = @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
+    @JsonIgnore
     public Set<User> getUsers() {
         return users;
     }

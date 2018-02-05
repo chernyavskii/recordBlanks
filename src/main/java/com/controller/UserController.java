@@ -41,9 +41,9 @@ public class UserController {
         });
     }
 
+    @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public @ResponseBody List<User> findAll() {
-        getClass();
+    public List<User> findAll() {
         return userService.findAll();
     }
 

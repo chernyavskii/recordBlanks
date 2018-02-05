@@ -1,19 +1,20 @@
 package com.model;
 
-import org.codehaus.jackson.annotate.JsonAnyGetter;
-import org.codehaus.jackson.annotate.JsonManagedReference;
-import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "User")
+
 public class User {
     private Long id;
     private String username;
     private String password;
+
     private Set<Agent> agents;
     private Set<Role> roles;
 
