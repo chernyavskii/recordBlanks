@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping
 public class IndexController {
-
+/*
+    http://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
+*/
     @Autowired
     private UserService userService;
 

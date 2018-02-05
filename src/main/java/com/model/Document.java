@@ -12,7 +12,6 @@ public class Document {
     private Set<User> users;
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
@@ -50,5 +49,15 @@ public class Document {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", document=" + Arrays.toString(document) +
+                ", users=" + users +
+                '}';
     }
 }

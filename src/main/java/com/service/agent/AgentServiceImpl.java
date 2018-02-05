@@ -19,14 +19,14 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.findAll();
     }
 
-    public Object findById(Long id)
+    public Agent findById(Long id)
     {
         Agent agnt = new Agent();
         agnt = agentDAO.findOne(id);
-        if(agnt == null)
+       /* if(agnt == null)
         {
             return (new Error("Entity not found", "entity_not_found", 404));
-        }
+        }*/
         return agnt;
     }
 

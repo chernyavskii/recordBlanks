@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional
     public List<User> findAll() {
         return userDAO.findAll();
     }
@@ -58,17 +59,14 @@ public class UserServiceImpl implements UserService {
         userDAO.delete(id);
     }
 
-   /* @Override
-    public User updateById(User user, Long id) {
+    @Override
+    public void updateById(User user, Long id) {
         User findUser = userDAO.findOne(id);
-        findUser.setPassword(user.getPassword());
-        findUser.setUsername(user.getPassword());
+        findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        findUser.setUsername(user.getUsername());
 
         userDAO.save(findUser);
-        //need fields to Agents
-
-        return findUser;
-    }*/
+    }
 
 
 
