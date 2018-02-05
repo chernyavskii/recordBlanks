@@ -7,8 +7,14 @@ import java.util.Set;
 
 public interface UserService {
     List<User> findAll();
-    User registrationTest(String username, String password);
-    /*void*/User save(User user); /////////
+    User save(User user);
+    User findById(Long id);
+    void deleteById(Long id);
+/*
+    User updateById(User user, Long id);
+*/
+/*
     User findByUsername(String username);
+*/
 }
 

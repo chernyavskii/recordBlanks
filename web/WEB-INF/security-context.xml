@@ -8,8 +8,16 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http>
+        <intercept-url pattern="/registration*" access="isAnonymous()" />
+        <intercept-url pattern="/login*" access="isAnonymous()" />
+
         <intercept-url pattern="/users/" access="isAuthenticated()"/>
 
+        <!--    <intercept-url pattern="/login" access="isAnonymous()"/>
+            <intercept-url pattern="/registration" access="isAnonymous()"/>-->
+        <!--
+                isAnonymous()
+        -->
         <http-basic />
         <csrf disabled="true"/>
 

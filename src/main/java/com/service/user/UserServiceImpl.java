@@ -29,16 +29,8 @@ public class UserServiceImpl implements UserService {
         return userDAO.findAll();
     }
 
-    public User registrationTest(String username, String password) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        userDAO.save(user);
-        return user;
-    }
-
     @Transactional
-    public /*void*/User save(User user) {
+    public User save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         Set<Role> roles = new HashSet<Role>();
@@ -56,8 +48,34 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public User findByUsername(String username) {
-        return userDAO.findByUsername(username);
+    @Override
+    public User findById(Long id) {
+        return userDAO.findOne(id);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        userDAO.delete(id);
+    }
+
+   /* @Override
+    public User updateById(User user, Long id) {
+        User findUser = userDAO.findOne(id);
+        findUser.setPassword(user.getPassword());
+        findUser.setUsername(user.getPassword());
+
+        userDAO.save(findUser);
+        //need fields to Agents
+
+        return findUser;
+    }*/
+
+
+
+  /*  public User findByUsername(String username) {
+        return userDAO.findByUsername(username);
+    }*/
+
+
 
 }
