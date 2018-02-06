@@ -1,10 +1,9 @@
 package com.utils;
 
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.*;
 
-/*
-@EnableSwagger2
-*/
+
 @Configuration
 public class SwaggerConfig {
 }

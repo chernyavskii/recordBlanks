@@ -11,7 +11,7 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
--- Dumping structure for table testDB.Agent
+-- Dumping structure for table misha.Agent
 CREATE TABLE IF NOT EXISTS `Agent` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(50) NOT NULL DEFAULT '0',
@@ -19,51 +19,43 @@ CREATE TABLE IF NOT EXISTS `Agent` (
   `lastName` varchar(50) NOT NULL DEFAULT '0',
   `organization` varchar(50) NOT NULL DEFAULT '0',
   `position` varchar(50) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
--- Dumping structure for table testDB.Role
-CREATE TABLE IF NOT EXISTS `Role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `FK_Agent_User` (`user_id`),
+  CONSTRAINT `FK_Agent_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
--- Dumping structure for table testDB.User
+-- Dumping structure for table misha.Document
+CREATE TABLE IF NOT EXISTS `Document` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `document` varbinary(50) NOT NULL DEFAULT '0',
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_Document_User` (`user_id`),
+  CONSTRAINT `FK_Document_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+-- Dumping structure for table misha.Role
+CREATE TABLE IF NOT EXISTS `Role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL DEFAULT '0',
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_Role_User` (`user_id`),
+  CONSTRAINT `FK_Role_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+-- Data exporting was unselected.
+-- Dumping structure for table misha.User
 CREATE TABLE IF NOT EXISTS `User` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL DEFAULT '0',
   `password` varchar(200) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
--- Dumping structure for table testDB.UserAgent
-CREATE TABLE IF NOT EXISTS `UserAgent` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT '0',
-  `agent_id` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `FK_UserAgent_User` (`user_id`),
-  KEY `FK_UserAgent_Agent` (`agent_id`),
-  CONSTRAINT `FK_UserAgent_Agent` FOREIGN KEY (`agent_id`) REFERENCES `Agent` (`id`),
-  CONSTRAINT `FK_UserAgent_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- Data exporting was unselected.
--- Dumping structure for table testDB.UserRole
-CREATE TABLE IF NOT EXISTS `UserRole` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `role_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `FK_UserRole_User` (`user_id`),
-  KEY `FK_UserRole_Role` (`role_id`),
-  CONSTRAINT `FK_UserRole_Role` FOREIGN KEY (`role_id`) REFERENCES `Role` (`id`),
-  CONSTRAINT `FK_UserRole_User` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Data exporting was unselected.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
