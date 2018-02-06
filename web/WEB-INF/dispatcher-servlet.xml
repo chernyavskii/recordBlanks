@@ -12,6 +12,7 @@
 
     <mvc:annotation-driven/>
 
+
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
 
@@ -24,9 +25,19 @@
         <property name="maxUploadSize" value="1000000" />
     </bean>
 
+<!--
+    <bean class="com.utils.SwaggerConfig"/></beans>
+-->
+
+
     <context:annotation-config/>
 
+
     <context:component-scan base-package="com"/>
+
+<!--
+    <bean id="swagger2Config" class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration" />
+-->
 
     <!--
         <context:property-placeholder location="classpath:database.properties"/>

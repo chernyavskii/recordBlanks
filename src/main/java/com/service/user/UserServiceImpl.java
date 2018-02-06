@@ -4,6 +4,7 @@ import com.dao.RoleDAO;
 import com.dao.UserDAO;
 import com.model.Role;
 import com.model.User;
+import com.utils.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,9 @@ import java.util.*;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private final String ROLE_ADMIN = "ROLE_ADMIN";
+    private final String ROLE_USER = "ROLE_USER";
+
     @Autowired
     private UserDAO userDAO;
 
@@ -27,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public List<User> findAll() {
+
         return userDAO.findAll();
     }
 
@@ -35,7 +40,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDAO.save(user);
         Role role = new Role();
-        role.setName("ROLE_ADMIN");
+        role.setName(ROLE_ADMIN);
         role.setUser(user);
         roleDAO.save(role);
 
