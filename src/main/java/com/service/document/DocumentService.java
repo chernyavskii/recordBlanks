@@ -1,6 +1,8 @@
 package com.service.document;
 
+import com.model.Agent;
 import com.model.Document;
+import com.model.Product;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,6 +13,6 @@ public interface DocumentService {
     Object findById(String username, Long id) throws IOException;
     Object addDocument(String username, byte[] document, String name);
     Object deleteDocument(String username, Long id);
-    Object writeToFileTN(String username, String name) throws IOException;
+    Object writeToFileTN(String username, Agent agent, List<Product> products) throws IOException;
 }
 

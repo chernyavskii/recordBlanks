@@ -1,12 +1,15 @@
 package com.controller;
 
+import com.model.Agent;
 import com.model.Document;
+import com.model.Product;
 import com.service.document.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +33,8 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/tn", method = RequestMethod.POST)
-    public @ResponseBody Object writeToFile(Principal principal, @RequestParam String name) throws IOException {
-        return documentService.writeToFileTN(principal.getName(), name);
+    public @ResponseBody Object writeToFile(Principal principal, @RequestBody Agent agent, @RequestBody List<Product> products) throws IOException {
+        return documentService.writeToFileTN(principal.getName(), agent, products);
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.POST)
