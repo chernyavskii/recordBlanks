@@ -10,8 +10,10 @@ public class Agent {
     private String firstName;
     private String middleName;
     private String lastName;
+    private String unp;
     private String organization;
     private String position;
+    private String address;
     private User user;
 
     @Id
@@ -55,6 +57,16 @@ public class Agent {
     }
 
     @Basic
+    @Column(name = "unp")
+    public String getUnp() {
+        return unp;
+    }
+
+    public void setUnp(String unp) {
+        this.unp = unp;
+    }
+
+    @Basic
     @Column(name = "organization")
     public String getOrganization() {
         return organization;
@@ -72,6 +84,16 @@ public class Agent {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    @Basic
+    @Column(name = "address")
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -8,6 +8,13 @@ public class User {
     private Long id;
     private String username;
     private String password;
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String unp;
+    private String organization;
+    private String position;
+    private String address;
     private Set<Agent> agents;
     private Set<Document> documents;
     private Set<Role> roles;
@@ -33,6 +40,16 @@ public class User {
     }
 
     @Basic
+    @Column(name = "unp")
+    public String getUnp() {
+        return unp;
+    }
+
+    public void setUnp(String unp) {
+        this.unp = unp;
+    }
+
+    @Basic
     @Column(name = "password")
     public String getPassword() {
         return password;
@@ -40,6 +57,66 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Basic
+    @Column(name = "firstName")
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    @Basic
+    @Column(name = "middleName")
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    @Basic
+    @Column(name = "lastName")
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Basic
+    @Column(name = "organization")
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    @Basic
+    @Column(name = "position")
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    @Basic
+    @Column(name = "address")
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
