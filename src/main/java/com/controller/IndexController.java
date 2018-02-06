@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/")
 @Api(value = "IndexControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IndexController {
+
     @Autowired
     private UserService userService;
 
