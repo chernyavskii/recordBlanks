@@ -86,5 +86,6 @@
     <orderEntry type="library" name="Maven: io.springfox:springfox-spi:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-core:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.7.9" level="project" />
+    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:4.8.1.1" level="project" />
   </component>
 </module>
