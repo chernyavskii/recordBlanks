@@ -36,8 +36,8 @@ public class DocumentController {
         return documentService.deleteDocument(id);
     }
 
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/new", method = RequestMethod.POST)
     public @ResponseBody Object writeToFile(@RequestParam String name) throws IOException {
         return documentService.writeToFile(name);
-    }
+    }*/
 }
