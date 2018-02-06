@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping(value = "documents")
 public class DocumentController {
 
-    @Autowired
+   @Autowired
     private DocumentService documentService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

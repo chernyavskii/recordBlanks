@@ -22,6 +22,8 @@ public class IndexController {
 /*
     http://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
 */
+
+
     @Autowired
     private UserService userService;
 
@@ -40,7 +42,7 @@ public class IndexController {
     public @ResponseBody Object login(@RequestBody User user) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
 
-        return user;
+        return "{\"success\":true}";
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)

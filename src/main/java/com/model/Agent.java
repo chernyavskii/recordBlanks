@@ -3,8 +3,6 @@ package com.model;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Agent {
@@ -14,8 +12,7 @@ public class Agent {
     private String lastName;
     private String organization;
     private String position;
-
-    private Set<User> users;
+    private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -77,27 +74,14 @@ public class Agent {
         this.position = position;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UserAgent", schema = "testDB", joinColumns = @JoinColumn(name = "agent_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
-    public Set<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    @Override
-    public String toString() {
-        return "Agent{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", organization='" + organization + '\'' +
-                ", position='" + position + '\'' +
-                ", users=" + users +
-                '}';
+    public void setUser(User user) {
+        this.user = user;
     }
 }

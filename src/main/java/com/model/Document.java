@@ -4,14 +4,13 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Arrays;
-import java.util.Set;
 
 @Entity
 public class Document {
     private Long id;
     private String name;
     private byte[] document;
-    private Set<User> users;
+    private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,24 +42,14 @@ public class Document {
         this.document = document;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "UserDocument", schema = "testDB", joinColumns = @JoinColumn(name = "document_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false))
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
-    public Set<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    @Override
-    public String toString() {
-        return "Document{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", document=" + Arrays.toString(document) +
-                ", users=" + users +
-                '}';
+    public void setUser(User user) {
+        this.user = user;
     }
 }

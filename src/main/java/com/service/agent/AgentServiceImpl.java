@@ -1,8 +1,8 @@
 package com.service.agent;
 
 import com.dao.AgentDAO;
-import com.utils.Error;
 import com.model.Agent;
+import com.utils.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +19,14 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.findAll();
     }
 
-    public Agent findById(Long id)
+    public Object findById(Long id)
     {
         Agent agnt = new Agent();
         agnt = agentDAO.findOne(id);
-       /* if(agnt == null)
+        if(agnt == null)
         {
             return (new Error("Entity not found", "entity_not_found", 404));
-        }*/
+        }
         return agnt;
     }
 

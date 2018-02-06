@@ -1,21 +1,15 @@
 package com.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-
-
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "User")
-
 public class User {
     private Long id;
     private String username;
     private String password;
-
     private Set<Agent> agents;
+    private Set<Document> documents;
     private Set<Role> roles;
 
     @Id
@@ -48,7 +42,7 @@ public class User {
         this.password = password;
     }
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     public Set<Agent> getAgents() {
         return agents;
     }
@@ -57,23 +51,21 @@ public class User {
         this.agents = agents;
     }
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    public Set<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<Document> documents) {
+        this.documents = documents;
+    }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     public Set<Role> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", agents=" + agents +
-                ", roles=" + roles +
-                '}';
     }
 }

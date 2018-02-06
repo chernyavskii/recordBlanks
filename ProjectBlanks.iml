@@ -21,11 +21,14 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
+          <unit-entry name="74.xml" value="ea0f1624-a8a4-4d42-9ede-919f20e1d864" />
           <unit-entry name="a.xml" value="5fa21d4e-c822-4559-81cd-7a98a4a76ce3" />
           <unit-entry name="fdsfdsf.xml" value="f96f6088-61b7-4873-94d5-9211db3dd2ff" />
           <unit-entry name="session-factory.xml" value="9818ae32-3d9e-48c6-9434-7197884e6dbe" />
         </datasource-map>
         <naming-strategy-map />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/123.xml" />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/74.xml" />
       </configuration>
     </facet>
   </component>
@@ -92,5 +95,14 @@
     <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml-schemas:3.11" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: io.springfox:springfox-swagger-ui:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: io.springfox:springfox-spring-web:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.plugin:spring-plugin-metadata:1.2.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: io.springfox:springfox-spi:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: io.springfox:springfox-core:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.7.9" level="project" />
   </component>
 </module>

@@ -33,8 +33,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userDAO.save(user);
+        Role role = new Role();
+        role.setName("ROLE_ADMIN");
+        role.setUser(user);
+        roleDAO.save(role);
 
-        Set<Role> roles = new HashSet<Role>();
+
+       /* Set<Role> roles = new HashSet<Role>();
         roles.add(roleDAO.findOne(2L));
         user.setRoles(roles);
 
@@ -46,7 +52,8 @@ public class UserServiceImpl implements UserService {
             role.getUsers().add(user);
             roleDAO.save(role);
         }
-        return user;
+        return user;*/
+       return user;
     }
 
     @Override
@@ -67,13 +74,4 @@ public class UserServiceImpl implements UserService {
 
         userDAO.save(findUser);
     }
-
-
-
-  /*  public User findByUsername(String username) {
-        return userDAO.findByUsername(username);
-    }*/
-
-
-
 }

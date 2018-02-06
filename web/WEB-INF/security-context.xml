@@ -11,7 +11,9 @@
         <intercept-url pattern="/registration*" access="isAnonymous()" />
         <intercept-url pattern="/login*" access="isAnonymous()" />
 
+<!--
         <intercept-url pattern="/users/" access="isAuthenticated()"/>
+-->
 
         <!--    <intercept-url pattern="/login" access="isAnonymous()"/>
             <intercept-url pattern="/registration" access="isAnonymous()"/>-->
