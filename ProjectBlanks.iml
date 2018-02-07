@@ -27,8 +27,6 @@
           <unit-entry name="session-factory.xml" value="9818ae32-3d9e-48c6-9434-7197884e6dbe" />
         </datasource-map>
         <naming-strategy-map />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/123.xml" />
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/74.xml" />
       </configuration>
     </facet>
   </component>
@@ -107,5 +105,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.swagger:swagger-models:1.5.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.swagger:swagger-annotations:1.5.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:18.0" level="project" />
+    <orderEntry type="library" name="Maven: com.ibm.icu:icu4j:4.8.1.1" level="project" />
   </component>
 </module>
