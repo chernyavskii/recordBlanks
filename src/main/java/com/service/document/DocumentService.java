@@ -13,6 +13,6 @@ public interface DocumentService {
     Object findById(String username, Long id) throws IOException;
     Object addDocument(String username, byte[] document, String name);
     Object deleteDocument(String username, Long id);
-    Object writeToFileTN(String username, Agent agent, List<Product> products) throws IOException;
+    Object writeToFileTN(String username, Long id, List<Product> products) throws IOException;
 }
 

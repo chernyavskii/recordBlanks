@@ -3,6 +3,7 @@ package com.controller;
 import com.model.Agent;
 import com.model.Document;
 import com.model.Product;
+import com.model.RequestWrapper;
 import com.service.document.DocumentService;
 import com.utils.Error;
 import io.swagger.annotations.ApiOperation;
@@ -53,8 +54,8 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Success response",response = Document.class),
             @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)
     })
-    public @ResponseBody Object writeToFile(Principal principal, @RequestBody Agent agent, @RequestBody List<Product> products) throws IOException {
-        return documentService.writeToFileTN(principal.getName(), agent, products);
+    public @ResponseBody Object writeToFile(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException {
+        return documentService.writeToFileTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts());
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.POST)

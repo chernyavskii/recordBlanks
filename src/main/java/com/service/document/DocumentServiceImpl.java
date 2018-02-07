@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -71,9 +72,17 @@ public class DocumentServiceImpl implements DocumentService {
         return document;
     }
 
-    public Object writeToFileTN(String username, Agent agent, List<Product> products) throws IOException
+    public Object writeToFileTN(String username, Long id, List<Product> products) throws IOException
     {
         User user = userDAO.findByUsername(username);
+        Agent agent = new Agent();
+        for(Agent agnt : user.getAgents())
+        {
+            if(id == agnt.getId())
+            {
+                agent = agnt;
+            }
+        }
         File file = new File(getClass().getClassLoader().getResource("files/tn.xls").getFile());
         FileInputStream inputStream = new FileInputStream(file);
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
@@ -83,9 +92,13 @@ public class DocumentServiceImpl implements DocumentService {
         sheet.getRow(4).getCell(25).setCellValue(user.getUnp());
         sheet.getRow(4).getCell(44).setCellValue(agent.getUnp());
         Date date = new Date();
-        sheet.getRow(15).getCell(27).setCellValue(date.getDay());
-        sheet.getRow(15).getCell(34).setCellValue(date.getMonth());
-        sheet.getRow(15).getCell(60).setCellValue(date.getYear());
+        SimpleDateFormat day = new SimpleDateFormat("dd");
+        sheet.getRow(15).getCell(27).setCellValue(day.format(date));
+        Locale locale = new Locale("ru", "RU");
+        SimpleDateFormat month = new SimpleDateFormat("MMMM", locale);
+        sheet.getRow(15).getCell(34).setCellValue(month.format(date));
+        SimpleDateFormat year = new SimpleDateFormat("yy");
+        sheet.getRow(15).getCell(60).setCellValue(year.format(date));
         CellStyle cs = workbook.createCellStyle();
         cs.setWrapText(true);
         sheet.getRow(17).getCell(17).setCellStyle(cs);
@@ -98,9 +111,27 @@ public class DocumentServiceImpl implements DocumentService {
         {
             for(int i=0; i < products.size(); i++)
             {
-                sheet.getRow(29 + i).getCell(0).setCellValue(products.get(0).getName());
+                sheet.getRow(29 + i).getCell(0).setCellValue(products.get(i).getName());
+                sheet.getRow(29 + i).getCell(22).setCellValue(products.get(i).getMeasure());
+                sheet.getRow(29 + i).getCell(32).setCellValue(products.get(i).getNumber());
+                sheet.getRow(29 + i).getCell(41).setCellValue(products.get(i).getPrice());
+                sheet.getRow(29 + i).getCell(51).setCellValue(products.get(i).getNumber() * products.get(i).getPrice());
+                sheet.getRow(29 + i).getCell(62).setCellValue(20);
+                sheet.getRow(29 + i).getCell(71).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() * 0.2);
+                sheet.getRow(29 + i).getCell(80).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() * 0.2 + products.get(i).getNumber() * products.get(i).getPrice());
+                sheet.getRow(29 + i).getCell(91).setCellValue(products.get(i).getNote());
             }
+            Long sumNumber = 0L;
+            for(int i=0; i < products.size(); i++)
+            {
+                sumNumber += products.get(i).getNumber();
+            }
+            sheet.getRow(32).getCell(32).setCellValue(sumNumber);
         }
+        sheet.getRow(40).getCell(17).setCellValue(user.getPosition() + " " + user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName());
+        sheet.getRow(43).getCell(21).setCellValue(user.getPosition() + " " + user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName());
+        sheet.getRow(47).getCell(23).setCellValue(agent.getPosition() + " " + agent.getLastName() + " " + agent.getFirstName() + " " + agent.getMiddleName());
+        sheet.getRow(53).getCell(23).setCellValue(agent.getPosition() + " " + agent.getLastName() + " " + agent.getFirstName() + " " + agent.getMiddleName());
         FileOutputStream out = new FileOutputStream(file);
         workbook.write(out);
         out.close();

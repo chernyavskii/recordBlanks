@@ -4,18 +4,9 @@ public class Product
 {
     private String name;
     private String measure;
-    private Integer number;
+    private Long number;
     private Double price;
-    private String note;
-
-    public Product(String name, String measure, Integer number, Double price, String note)
-    {
-        this.name = name;
-        this.measure = measure;
-        this.number = number;
-        this.price = price;
-        this.note = note;
-    }
+    private String note = "-";
 
     public String getName() {
         return name;
@@ -33,11 +24,11 @@ public class Product
         this.measure = measure;
     }
 
-    public Integer getNumber() {
+    public Long getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(Long number) {
         this.number = number;
     }
 
