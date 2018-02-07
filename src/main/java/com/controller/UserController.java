@@ -1,9 +1,8 @@
 package com.controller;
 
 import com.model.User;
-import com.service.agent.AgentService;
 import com.service.user.UserService;
-import com.utils.Error;
+import com.errors.Error;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
