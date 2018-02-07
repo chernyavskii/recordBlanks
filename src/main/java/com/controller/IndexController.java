@@ -98,7 +98,6 @@ public class IndexController {
             @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)})
     public @ResponseBody User login(@RequestBody User user) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
-
         return user;
     }
 
