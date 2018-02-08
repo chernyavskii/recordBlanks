@@ -12,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "agents")
@@ -27,8 +29,8 @@ public class AgentController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success response",response = Agent.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "List of agents are empty", response = Error.class)})
-    public @ResponseBody List<Agent> getAgentsInJSON() {
-        return agentService.findAll();
+    public @ResponseBody Set<Agent> getAgentsInJSON(Principal principal) {
+        return agentService.getAllAgents(principal.getName());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -38,8 +40,8 @@ public class AgentController {
             @ApiResponse(code = 400, message = "Invalid ID supplied", response = Error.class),
             @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
     })
-    public @ResponseBody Object getAgentByIdInJSON(@PathVariable("id") Long id) {
-        return agentService.findById(id);
+    public @ResponseBody Object getAgentByIdInJSON(Principal principal, @PathVariable("id") Long id) {
+        return agentService.getAgentById(principal.getName(), id);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -48,8 +50,8 @@ public class AgentController {
             @ApiResponse(code = 200, message = "Success response",response = Agent.class),
             @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)
     })
-    public @ResponseBody Object addAgentInJSON(@RequestBody Agent agent) {
-        return agentService.addAgent(agent);
+    public @ResponseBody Object addAgentInJSON(Principal principal, @RequestBody Agent agent) {
+        return agentService.addAgent(principal.getName(), agent);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -60,8 +62,8 @@ public class AgentController {
             @ApiResponse(code = 404, message = "Agent not found", response = Error.class),
 
     })
-    public @ResponseBody Object deleteAgentInJSON(@PathVariable("id") Long id) {
-        return agentService.deleteAgent(id);
+    public @ResponseBody Object deleteAgentInJSON(Principal principal, @PathVariable("id") Long id) {
+        return agentService.deleteAgent(principal.getName(), id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -72,7 +74,7 @@ public class AgentController {
             @ApiResponse(code = 404, message = "Agent not found", response = Error.class),
 
     })
-    public @ResponseBody Object updateAgentInJSON(@PathVariable("id") Long id, @RequestBody Agent agent) {
-        return agentService.updateAgent(id, agent);
+    public @ResponseBody Object updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent) {
+        return agentService.updateAgent(principal.getName(), id, agent);
     }
 }
