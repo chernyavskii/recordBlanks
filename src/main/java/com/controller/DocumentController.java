@@ -33,7 +33,7 @@ public class DocumentController
             @ApiResponse(code = 404, message = "List of documents are empty", response = Error.class)})
     public @ResponseBody Set<Document> getDocumentsInJSON(Principal principal)
     {
-        return documentService.findAll(principal.getName());
+        return documentService.getAllDocuments(principal.getName());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -44,7 +44,7 @@ public class DocumentController
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
     public @ResponseBody Object getDocumentByIdInJSON(Principal principal, @PathVariable("id") Long id) throws IOException {
-        return documentService.findById(principal.getName(), id);
+        return documentService.getDocumentById(principal.getName(), id);
     }
 
     @RequestMapping(value = "/tn", method = RequestMethod.POST)
@@ -54,7 +54,7 @@ public class DocumentController
             @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)
     })
     public @ResponseBody Object writeToFile(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException {
-        return documentService.writeToFileTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts());
+        return documentService.addDocumentTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts());
     }
 
     /*@RequestMapping(value = "/", method = RequestMethod.POST)
