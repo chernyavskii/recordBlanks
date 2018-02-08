@@ -6,12 +6,19 @@ public class Error
     private String status;
     private int code;
 
+    public static final String ENTITY_NOT_FOUND_MESSAGE = "entity not found";
+    public static final String ENTITY_NOT_FOUND_STATUS = "404 not found";
+
+    public static final String LIST_ENTITIES_EMPTY_MESSAGE = "list of entities are empty";
+    public static final String LIST_ENTITIES_EMPTY_STATUS = "404 not found";
+
     public static final String SERVER_ERROR_MESSAGE = "server error";
     public static final String SERVER_ERROR_STATUS = "500 Internal Server Error";
 
     public static final String EMPTY_FIElD_MESSAGE = "a field is empty";
     public static final String EMPTY_FIElD_STATUS = "400 bad request";
 
+    /*USER SERVICE*/
     public static final String DUPLICATED_ENTITY_MESSAGE = "already exist in system";
     public static final String DUPLICATED_ENTITY_STATUS = "409 conflict";
 
@@ -24,14 +31,15 @@ public class Error
     public static final String LOGIN_INCORRECT_MESSAGE = "login or password is incorrect";
     public static final String LOGIN_INCORRECT_STATUS = "403 forbidden";
 
-    public static final String LIST_USERS_EMPTY_MESSAGE = "list of users are empty";
-    public static final String LIST_USERS_EMPTY_STATUS = "404 not found";
-
-    public static final String USER_NOT_FOUND_MESSAGE = "user not found";
-    public static final String USER_NOT_FOUND_STATUS = "404 not found";
-
     public static final String USER_DO_NOT_LOGGEDIN_MESSAGE = "user do not logged-in";
     public static final String USER_DO_NOT_LOGGEDIN_STATUS = "404 not found";
+
+    /*AGENT SERVICE*/
+
+    public static final String UNAUTHORIZED_MESSAGE = "Unauthorized at system";
+    public static final String UNAUTHORIZED_STATUS = "401 unauthorized";
+
+
 
     public Error(){}
 

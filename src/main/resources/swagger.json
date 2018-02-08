@@ -8,8 +8,6 @@
   "tags" : [ {
     "name" : "AgentsControllerAPI"
   }, {
-    "name" : "DocumentsControllerAPI"
-  }, {
     "name" : "IndexControllerAPI"
   }, {
     "name" : "UserControllerAPI"
@@ -18,7 +16,7 @@
     "/agents" : {
       "get" : {
         "tags" : [ "AgentsControllerAPI" ],
-        "summary" : "Get the list of agents",
+        "summary" : "Get list of agents",
         "description" : "",
         "operationId" : "getAgentsInJSON",
         "responses" : {
@@ -68,7 +66,7 @@
     "/agents/{id}" : {
       "get" : {
         "tags" : [ "AgentsControllerAPI" ],
-        "summary" : "Get the Agent by ID",
+        "summary" : "Get Agent by ID",
         "description" : "",
         "operationId" : "getAgentByIdInJSON",
         "parameters" : [ {
@@ -85,12 +83,6 @@
               "$ref" : "#/definitions/Agent"
             }
           },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          },
           "404" : {
             "description" : "Agent not found",
             "schema" : {
@@ -101,7 +93,7 @@
       },
       "put" : {
         "tags" : [ "AgentsControllerAPI" ],
-        "summary" : "Put the Agent by ID",
+        "summary" : "Put Agent by ID",
         "description" : "",
         "operationId" : "updateAgentInJSON",
         "parameters" : [ {
@@ -141,7 +133,7 @@
       },
       "delete" : {
         "tags" : [ "AgentsControllerAPI" ],
-        "summary" : "Delete the Agent by ID",
+        "summary" : "Delete Agent by ID",
         "description" : "",
         "operationId" : "deleteAgentInJSON",
         "parameters" : [ {
@@ -158,166 +150,8 @@
               "$ref" : "#/definitions/Agent"
             }
           },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          },
           "404" : {
             "description" : "Agent not found",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/documents" : {
-      "get" : {
-        "tags" : [ "DocumentsControllerAPI" ],
-        "summary" : "Get the list of documents",
-        "description" : "",
-        "operationId" : "getDocumentsInJSON",
-        "responses" : {
-          "200" : {
-            "description" : "Success response",
-            "schema" : {
-              "$ref" : "#/definitions/Document"
-            }
-          },
-          "404" : {
-            "description" : "List of documents are empty",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "DocumentsControllerAPI" ],
-        "summary" : "Add a new Document",
-        "description" : "",
-        "operationId" : "addDocumentInJSON",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/CommonsMultipartFile"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success response",
-            "schema" : {
-              "$ref" : "#/definitions/Document"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          },
-          "404" : {
-            "description" : "Document not found",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/documents/new" : {
-      "post" : {
-        "tags" : [ "DocumentsControllerAPI" ],
-        "summary" : "Write to file",
-        "description" : "",
-        "operationId" : "writeToFile",
-        "parameters" : [ {
-          "name" : "",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success response",
-            "schema" : {
-              "$ref" : "#/definitions/Document"
-            }
-          },
-          "404" : {
-            "description" : "Name not found",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/documents/{id}" : {
-      "get" : {
-        "tags" : [ "DocumentsControllerAPI" ],
-        "summary" : "Get the Document by ID",
-        "description" : "",
-        "operationId" : "getDocumentByIdInJSON",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success response",
-            "schema" : {
-              "$ref" : "#/definitions/Document"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          },
-          "404" : {
-            "description" : "Document not found",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "DocumentsControllerAPI" ],
-        "summary" : "Delete the Document by ID",
-        "description" : "",
-        "operationId" : "deleteDocumentInJSON",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success response",
-            "schema" : {
-              "$ref" : "#/definitions/Document"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          },
-          "404" : {
-            "description" : "Document not found",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
@@ -341,13 +175,13 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return a User",
             "schema" : {
               "$ref" : "#/definitions/User"
             }
           },
-          "422" : {
-            "description" : "Wrong parameters",
+          "403" : {
+            "description" : "login or password is incorrect",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
@@ -363,13 +197,13 @@
         "operationId" : "logout",
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Logout user",
             "schema" : {
               "$ref" : "#/definitions/User"
             }
           },
-          "422" : {
-            "description" : "Wrong parameters",
+          "404" : {
+            "description" : "user do not logged-in",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
@@ -393,13 +227,25 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return a new User",
             "schema" : {
               "$ref" : "#/definitions/User"
             }
           },
-          "422" : {
-            "description" : "Wrong parameters",
+          "400" : {
+            "description" : "'username' a field must be bellow 5 characters",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "409" : {
+            "description" : "'username' already exist in system",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "server error",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
@@ -410,12 +256,12 @@
     "/users" : {
       "get" : {
         "tags" : [ "UserControllerAPI" ],
-        "summary" : "Get the list of users",
+        "summary" : "Get list of users",
         "description" : "",
         "operationId" : "findAll",
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return list of users",
             "schema" : {
               "$ref" : "#/definitions/User"
             }
@@ -432,7 +278,7 @@
     "/users/{id}" : {
       "get" : {
         "tags" : [ "UserControllerAPI" ],
-        "summary" : "Get the User by ID",
+        "summary" : "Get User by ID",
         "description" : "",
         "operationId" : "findById",
         "parameters" : [ {
@@ -444,15 +290,9 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return User",
             "schema" : {
               "$ref" : "#/definitions/User"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
             }
           },
           "404" : {
@@ -465,7 +305,7 @@
       },
       "put" : {
         "tags" : [ "UserControllerAPI" ],
-        "summary" : "Put the User by ID",
+        "summary" : "Update User by ID",
         "description" : "",
         "operationId" : "updateById",
         "parameters" : [ {
@@ -484,15 +324,9 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return updated user",
             "schema" : {
               "$ref" : "#/definitions/User"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
             }
           },
           "404" : {
@@ -505,7 +339,7 @@
       },
       "delete" : {
         "tags" : [ "UserControllerAPI" ],
-        "summary" : "Delete the User by ID",
+        "summary" : "Delete User by ID",
         "description" : "",
         "operationId" : "deleteById",
         "parameters" : [ {
@@ -517,15 +351,9 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Deleted successfully",
             "schema" : {
               "$ref" : "#/definitions/User"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
             }
           },
           "404" : {
@@ -555,52 +383,20 @@
         "lastName" : {
           "type" : "string"
         },
+        "unp" : {
+          "type" : "string"
+        },
         "organization" : {
           "type" : "string"
         },
         "position" : {
           "type" : "string"
         },
+        "address" : {
+          "type" : "string"
+        },
         "user" : {
           "$ref" : "#/definitions/User"
-        }
-      }
-    },
-    "CommonsMultipartFile" : {
-      "type" : "object",
-      "properties" : {
-        "fileItem" : {
-          "$ref" : "#/definitions/FileItem"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "name" : {
-          "type" : "string"
-        },
-        "bytes" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string",
-            "format" : "byte"
-          }
-        },
-        "empty" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "inputStream" : {
-          "$ref" : "#/definitions/InputStream"
-        },
-        "contentType" : {
-          "type" : "string"
-        },
-        "storageDescription" : {
-          "type" : "string"
-        },
-        "originalFilename" : {
-          "type" : "string"
         }
       }
     },
@@ -632,55 +428,14 @@
         "message" : {
           "type" : "string"
         },
-        "code" : {
+        "status" : {
           "type" : "string"
         },
-        "status" : {
+        "code" : {
           "type" : "integer",
           "format" : "int32"
         }
       }
-    },
-    "FileItem" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "inputStream" : {
-          "$ref" : "#/definitions/InputStream"
-        },
-        "contentType" : {
-          "type" : "string"
-        },
-        "outputStream" : {
-          "$ref" : "#/definitions/OutputStream"
-        },
-        "string" : {
-          "type" : "string"
-        },
-        "fieldName" : {
-          "type" : "string"
-        },
-        "formField" : {
-          "type" : "boolean",
-          "default" : false
-        },
-        "inMemory" : {
-          "type" : "boolean",
-          "default" : false
-        }
-      }
-    },
-    "InputStream" : {
-      "type" : "object"
-    },
-    "OutputStream" : {
-      "type" : "object"
     },
     "Role" : {
       "type" : "object",
@@ -708,6 +463,27 @@
           "type" : "string"
         },
         "password" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "middleName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "unp" : {
+          "type" : "string"
+        },
+        "organization" : {
+          "type" : "string"
+        },
+        "position" : {
+          "type" : "string"
+        },
+        "address" : {
           "type" : "string"
         },
         "agents" : {

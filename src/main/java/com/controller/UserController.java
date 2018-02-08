@@ -36,7 +36,7 @@ public class UserController {
     public @ResponseBody ResponseEntity<?> findAll() {
         List<User> userList = userService.findAll();
         if (userList.size() == 0) {
-            Error error = new Error(Error.LIST_USERS_EMPTY_MESSAGE, Error.LIST_USERS_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
+            Error error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(userList, HttpStatus.OK);
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get the User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
+    @ApiOperation(value = "Get User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return User", response = User.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class),
@@ -53,7 +53,7 @@ public class UserController {
     public @ResponseBody ResponseEntity<?> findById(@PathVariable("id") Long id) {
         User user = userService.findById(id);
         if (user == null) {
-            Error error = new Error(Error.USER_NOT_FOUND_MESSAGE, Error.USER_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<User>(user, HttpStatus.OK);
@@ -69,7 +69,7 @@ public class UserController {
     })
     public @ResponseBody ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         if (userService.findById(id) == null) {
-            Error error = new Error(Error.USER_NOT_FOUND_MESSAGE, Error.USER_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<Object>(userService.deleteById(id), HttpStatus.OK);
@@ -84,7 +84,7 @@ public class UserController {
     })
     public @ResponseBody ResponseEntity<?> updateById(@PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult){
         if (userService.findById(id) == null) {
-            Error error = new Error(Error.USER_NOT_FOUND_MESSAGE, Error.USER_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<User>(userService.updateById(user, id), HttpStatus.OK);
