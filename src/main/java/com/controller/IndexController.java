@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.codehaus.jackson.map.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,10 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/")
@@ -74,7 +68,7 @@ public class IndexController {
                     error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 default :
-                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
                     return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -93,7 +87,7 @@ public class IndexController {
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
         }
         else {
             Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());
@@ -104,14 +98,17 @@ public class IndexController {
     @RequestMapping(value="/logout", method = RequestMethod.GET)
     @ApiOperation(value = "User logout ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response", response = User.class),
-            @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)})
-    public @ResponseBody Object logout (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            new SecurityContextLogoutHandler().logout(request, response, auth);
+            @ApiResponse(code = 200, message = "Logout user", response = User.class),
+            @ApiResponse(code = 404, message = "user do not logged-in", response = Error.class)})
+    public @ResponseBody ResponseEntity<?> logout (HttpServletRequest request, HttpServletResponse response) {
+        if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return "{\"success\":true}";
+        else{
+            Error error = new Error(Error.USER_DO_NOT_LOGGEDIN_MESSAGE, Error.USER_DO_NOT_LOGGEDIN_STATUS, HttpStatus.NOT_FOUND.value());
+           return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)

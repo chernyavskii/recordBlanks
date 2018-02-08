@@ -3,6 +3,7 @@ package com.controller;
 import com.model.User;
 import com.service.user.UserService;
 import com.errors.Error;
+import com.validator.UserValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -11,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +26,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired UserValidator userValidator;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of users", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "List of users are empty", response = Error.class)})
-    public @ResponseBody
-    ResponseEntity<?> findAll() {
+    public @ResponseBody ResponseEntity<?> findAll() {
         List<User> userList = userService.findAll();
         if (userList.size() == 0) {
             Error error = new Error(Error.LIST_USERS_EMPTY_MESSAGE, Error.LIST_USERS_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -75,16 +77,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ApiOperation(value = "Put the User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiOperation(value = "Update User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response",response = User.class),
-            @ApiResponse(code = 400, message = "Invalid ID supplied", response = Error.class),
+            @ApiResponse(code = 200, message = "Return updated user",response = User.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class),
-
     })
-    public @ResponseBody Object updateById(@PathVariable("id") Long id, @RequestBody User user){
-        userService.updateById(user, id);
-        return "{\"success\":true}";
+    public @ResponseBody ResponseEntity<?> updateById(@PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult){
+        if (userService.findById(id) == null) {
+            Error error = new Error(Error.USER_NOT_FOUND_MESSAGE, Error.USER_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<User>(userService.updateById(user, id), HttpStatus.OK);
+        }
     }
 
 

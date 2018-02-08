@@ -59,16 +59,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateById(User user, Long id) {
+    public User updateById(User user, Long id) {
         User findUser = userDAO.findOne(id);
-        findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        findUser.setUsername(user.getUsername());
-        Set<Agent> agents = findUser.getAgents();
-        Set<Document> documents = findUser.getDocuments();
-        /*documents.
-        findUser.setAgents();
-*/
-        userDAO.save(findUser);
+        /*findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        findUser.setUsername(user.getUsername());*/
+        findUser.setFirstName(user.getFirstName());
+        findUser.setMiddleName(user.getMiddleName());
+        findUser.setLastName(user.getLastName());
+        findUser.setAddress(user.getAddress());
+        findUser.setOrganization(user.getOrganization());
+        findUser.setPosition(user.getPosition());
+        findUser.setUnp(user.getUnp());
+
+        return userDAO.save(findUser);
     }
 
     @Override

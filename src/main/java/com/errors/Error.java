@@ -30,11 +30,8 @@ public class Error
     public static final String USER_NOT_FOUND_MESSAGE = "user not found";
     public static final String USER_NOT_FOUND_STATUS = "404 not found";
 
-
-
-
-
-    ///ВСЕ BAD REQUEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public static final String USER_DO_NOT_LOGGEDIN_MESSAGE = "user do not logged-in";
+    public static final String USER_DO_NOT_LOGGEDIN_STATUS = "404 not found";
 
     public Error(){}
 

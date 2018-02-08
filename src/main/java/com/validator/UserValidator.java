@@ -3,7 +3,6 @@ package com.validator;
 import com.errors.Error;
 import com.model.User;
 import com.service.user.UserService;
-import org.apache.xmlbeans.impl.validator.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
