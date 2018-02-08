@@ -48,57 +48,57 @@ public class IndexController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ApiOperation(value = "New User registration", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response",response = User.class),
-            @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)})
+            @ApiResponse(code = 200, message = "Return a new User",response = User.class),
+            @ApiResponse(code = 409, message = "'username' already exist in system", response = Error.class),
+            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class),
+            @ApiResponse(code = 400, message = "'password' a field must be bellow 8 characters", response = Error.class),
+            @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
+            @ApiResponse(code = 500, message = "server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            Error error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
-            return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+            Error error;
+            switch(bindingResult.getFieldError().getDefaultMessage())
+            {
+                case Error.DUPLICATED_ENTITY_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                case Error.EMPTY_FIElD_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PASSWORD_LENGTH_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.USERNAME_LENGTH_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
         else {
             userService.save(user);
             securityService.autoLogin(user.getUsername(), user.getPassword());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
-           /* List<ObjectError> objectErrors = bindingResult.getAllErrors();
-            String objectError1 = bindingResult.getFieldError().getField();
-            Object asd = bindingResult.getFieldError().getRejectedValue();*/
-           /* for (ObjectError objectError : objectErrors) {
-                Error a = new Error();
-                a.setCode(objectError.getCode());
-                a.setMessage(objectError.getDefaultMessage());
-
-                a1.add(a);
-            }
-            return new ResponseEntity<List<Error>>(a1,HttpStatus.FORBIDDEN);*/
-
-        //}
-        /*else {
-            getClass();
-            if (user.getPassword().equals("") && user.getUsername().equals("")
-                    && user.getAddress().equals("") && user.getOrganization().equals("")
-                    && user.getUnp().equals("") && user.getFirstName().equals("")
-                    && user.getLastName().equals("") && user.getPosition().equals("")
-                    && user.getMiddleName().equals("")) {
-
-                return new ResponseEntity<>(new Error(Error.NOT_FOUND_MESSAGE, Error.NOT_FOUND_CODE), HttpStatus.FORBIDDEN);
-            } else {
-                userService.save(user);
-                securityService.autoLogin(user.getUsername(), user.getPassword());
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            }
-            return null;*/
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "User login ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response",response = User.class),
-            @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)})
-    public @ResponseBody User login(@RequestBody User user) {
+            @ApiResponse(code = 200, message = "Return a User",response = User.class),
+            @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
+    public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
-        return user;
+        if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        else {
+            Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)

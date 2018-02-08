@@ -2,6 +2,8 @@ package com.service.user;
 
 import com.dao.RoleDAO;
 import com.dao.UserDAO;
+import com.model.Agent;
+import com.model.Document;
 import com.model.Role;
 import com.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,33 +32,18 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public List<User> findAll() {
-
         return userDAO.findAll();
     }
 
     @Transactional
     public User save(User user) {
+        Role role = new Role();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDAO.save(user);
-        Role role = new Role();
-        role.setName(ROLE_ADMIN);
+        role.setName(ROLE_USER);
         role.setUser(user);
         roleDAO.save(role);
 
-
-       /* Set<Role> roles = new HashSet<Role>();
-        roles.add(roleDAO.findOne(2L));
-        user.setRoles(roles);
-
-        userDAO.save(user);
-
-        Set<Role> roleHashSet = new HashSet<Role>();
-        roleHashSet = user.getRoles();
-        for(Role role : roleHashSet){
-            role.getUsers().add(user);
-            roleDAO.save(role);
-        }
-        return user;*/
        return user;
     }
 
@@ -66,8 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public Object deleteById(Long id) {
         userDAO.delete(id);
+        return "{\"success\":true}";
     }
 
     @Override
@@ -75,7 +63,11 @@ public class UserServiceImpl implements UserService {
         User findUser = userDAO.findOne(id);
         findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         findUser.setUsername(user.getUsername());
-
+        Set<Agent> agents = findUser.getAgents();
+        Set<Document> documents = findUser.getDocuments();
+        /*documents.
+        findUser.setAgents();
+*/
         userDAO.save(findUser);
     }
 

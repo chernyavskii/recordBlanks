@@ -38,13 +38,13 @@ public class UserValidator implements Validator {
         if(userService.findByUsername(user.getUsername()) != null){
             errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS,Error.DUPLICATED_ENTITY_MESSAGE);
         }
-        ///ВСЕ BAD REQUEST
 
+        if(user.getPassword().length() < 8){
+            errors.rejectValue("password", Error.PASSWORD_LENGTH_STATUS, Error.PASSWORD_LENGTH_MESSAGE);
+        }
 
-
-      /*  ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "Required");
-        if (user.getUsername().length() < 8 || user.getUsername().length() > 32) {
-            errors.rejectValue("username", "Size.userForm.username");
-        }*/
+        if(user.getUsername().length() < 5){
+            errors.rejectValue("username", Error.USERNAME_LENGTH_STATUS, Error.USERNAME_LENGTH_MESSAGE);
+        }
     }
 }
