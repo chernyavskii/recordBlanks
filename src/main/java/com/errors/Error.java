@@ -39,6 +39,9 @@ public class Error
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized at system";
     public static final String UNAUTHORIZED_STATUS = "401 unauthorized";
 
+    public static final String UNP_LENGTH_MESSAGE = "a field must be bellow 9 characters";
+    public static final String UNP_LENGTH_STATUS = "400 bad request";
+
 
 
     public Error(){}

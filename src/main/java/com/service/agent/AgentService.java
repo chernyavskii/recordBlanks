@@ -1,8 +1,6 @@
 package com.service.agent;
 
 import com.model.Agent;
-
-import java.util.List;
 import java.util.Set;
 
 public interface AgentService {
@@ -11,5 +9,6 @@ public interface AgentService {
     Agent addAgent(String username, Agent agent);
     Agent deleteAgent(String username, Long id);
     Agent updateAgent(String username, Long id, Agent agent);
+    Boolean checkUnp(String username, String unp);
 }
 

@@ -4,6 +4,7 @@ import com.errors.Error;
 import com.model.Agent;
 import com.service.agent.AgentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -32,6 +33,12 @@ public class AgentValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
 
+        if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent.getUnp()).booleanValue()){
+            errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+        }
 
+        if(agent.getUnp().length() != 9){
+            errors.rejectValue("unp", Error.UNP_LENGTH_STATUS, Error.UNP_LENGTH_MESSAGE);
+        }
     }
 }

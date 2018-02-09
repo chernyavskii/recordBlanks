@@ -1,5 +1,7 @@
 package com.service.user;
 
+import com.dao.AgentDAO;
+import com.dao.DocumentDAO;
 import com.dao.RoleDAO;
 import com.dao.UserDAO;
 import com.model.Agent;
@@ -28,6 +30,12 @@ public class UserServiceImpl implements UserService {
     private RoleDAO roleDAO;
 
     @Autowired
+    private AgentDAO agentDAO;
+
+    @Autowired
+    private DocumentDAO documentDAO;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
@@ -54,7 +62,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Object deleteById(Long id) {
+        User user = userDAO.findOne(id);
+        agentDAO.delete(user.getAgents());
+        roleDAO.delete(user.getRoles());
+        documentDAO.delete(user.getDocuments());
+
         userDAO.delete(id);
+
         return "{\"success\":true}";
     }
 

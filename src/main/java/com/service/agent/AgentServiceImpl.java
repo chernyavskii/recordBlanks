@@ -7,6 +7,8 @@ import com.errors.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -49,6 +51,7 @@ public class AgentServiceImpl implements AgentService {
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
         agnt.setUser(userDAO.findByUsername(username));
+
         return agentDAO.save(agnt);
     }
 
@@ -76,7 +79,24 @@ public class AgentServiceImpl implements AgentService {
         agnt.setOrganization(agent.getOrganization());
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
+/*
         agnt.setUser(userDAO.findByUsername(username));
+*/
+
         return agentDAO.save(agnt);
+    }
+
+    public Boolean checkUnp(String username, String unp)
+    {
+        Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
+        for(Agent agent : userDAO.findByUsername(username).getAgents()){
+            if(agent.getUnp().equals(unp)){
+                return true;
+            }
+            else{
+                iterator.next();
+            }
+        }
+        return false;
     }
 }
