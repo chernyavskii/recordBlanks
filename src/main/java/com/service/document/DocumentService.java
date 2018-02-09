@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface DocumentService {
     Set<Document> getAllDocuments(String username);
-    Object getDocumentById(String username, Long id) throws IOException;
+    Document getDocumentById(String username, Long id) throws IOException;
     Object addDocumentTN(String username, Long id, List<Product> products) throws IOException;
     Object deleteDocument(String username, Long id);
     File createFileTN();

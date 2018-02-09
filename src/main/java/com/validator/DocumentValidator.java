@@ -1,13 +1,12 @@
 package com.validator;
 
 import com.errors.Error;
+import com.model.Document;
+import com.model.Product;
 import com.model.RequestWrapper;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-import javax.validation.Valid;
 
 @Component
 public class DocumentValidator implements Validator {
@@ -18,12 +17,13 @@ public class DocumentValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        RequestWrapper requestWrapper = (RequestWrapper)o;
+       Product p = (Product)o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace( errors,"name", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace( errors,"document", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-
-
-
+/*//        List<Product> productList = p.getProducts();
+        Iterator<Product> productIterator = productList.iterator();
+        for(Product product : productList){
+            errors.rejectValue("name", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            ValidationUtils.rejectIfEmptyOrWhitespace( errors,product.getName(), Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
+        }*/
     }
 }

@@ -47,8 +47,7 @@ public class UserController {
     @ApiOperation(value = "Get User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return User", response = User.class),
-            @ApiResponse(code = 404, message = "User not found", response = Error.class),
-
+            @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> findById(@PathVariable("id") Long id) {
         User user = userService.findById(id);

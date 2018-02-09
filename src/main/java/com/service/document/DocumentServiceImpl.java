@@ -34,7 +34,7 @@ public class DocumentServiceImpl implements DocumentService {
         return userDAO.findByUsername(username).getDocuments();
     }
 
-    public Object getDocumentById(String username, Long id) throws IOException
+    public Document getDocumentById(String username, Long id) throws IOException
     {
         Document document = new Document();
         for(Document doc : userDAO.findByUsername(username).getDocuments())
