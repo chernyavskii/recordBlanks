@@ -107,7 +107,7 @@ public class IndexController {
         }
         else{
             Error error = new Error(Error.USER_DO_NOT_LOGGEDIN_MESSAGE, Error.USER_DO_NOT_LOGGEDIN_STATUS, HttpStatus.NOT_FOUND.value());
-           return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
         }
     }
 
@@ -115,6 +115,18 @@ public class IndexController {
     public /*@ResponseBody*/ String mainTest() {
 
         return "welcome";
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String fgf() {
+
+        return "index";
+    }
+
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    public String as() {
+
+        return "main";
     }
 
 }
