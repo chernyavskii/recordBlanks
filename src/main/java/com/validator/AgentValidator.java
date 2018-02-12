@@ -25,13 +25,13 @@ public class AgentValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Agent agent = (Agent)o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"unp",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"organization",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"unp",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"organization",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
 
         if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent.getUnp()).booleanValue()){
             errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);

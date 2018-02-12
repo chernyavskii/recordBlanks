@@ -82,7 +82,6 @@ public class AgentServiceImpl implements AgentService {
 /*
         agnt.setUser(userDAO.findByUsername(username));
 */
-
         return agentDAO.save(agnt);
     }
 

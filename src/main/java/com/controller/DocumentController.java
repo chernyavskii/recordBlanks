@@ -1,7 +1,6 @@
 package com.controller;
 
 import com.model.Document;
-import com.model.Product;
 import com.model.RequestWrapper;
 import com.service.document.DocumentService;
 import com.errors.Error;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -67,27 +65,25 @@ public class DocumentController
     @RequestMapping(value = "/tn", method = RequestMethod.POST)
     @ApiOperation(value = "Write to file", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response",response = Document.class),
-            @ApiResponse(code = 422, message = "Wrong parameters", response = Error.class)
+            @ApiResponse(code = 200, message = "Return Document",response = Document.class),
+            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> writeToFile(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException {
-/*
-        documentValidator.validate(requestWrapper, bindingResult);
-*/
+        documentValidator.validate(requestWrapper.getProducts(), bindingResult);
         Error error;
-        requestWrapper.getProducts().size();
-        ////ПРОВЕРИТЬ НА РАЗМЕР СПИСКА
-        ////SWITCH/CASE НА ВСЕ СЛУЧАИ В Procuct, ПОТОМУ ЧТО МЫ ПЕРЕдАЕМ В RequestWrapper только 2 поля, а нам надо весь объект Product,
-        //поэтому доделай тут вручную, всё тут проверь
-        List<Product> list = requestWrapper.getProducts();
-        for(Product product : list){
-            if(product.getName().equals(""))
-            {
-                error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        return new ResponseEntity<>(documentService.addDocumentTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK) ;
+        else {
+            return new ResponseEntity<>(documentService.addDocumentTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

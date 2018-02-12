@@ -15,8 +15,8 @@ public class Error
     public static final String SERVER_ERROR_MESSAGE = "server error";
     public static final String SERVER_ERROR_STATUS = "500 Internal Server Error";
 
-    public static final String EMPTY_FIElD_MESSAGE = "a field is empty";
-    public static final String EMPTY_FIElD_STATUS = "400 bad request";
+    public static final String EMPTY_FIELD_MESSAGE = "a field is empty";
+    public static final String EMPTY_FIELD_STATUS = "400 bad request";
 
     /*USER SERVICE*/
     public static final String DUPLICATED_ENTITY_MESSAGE = "already exist in system";

@@ -24,15 +24,15 @@ public class UserValidator implements Validator {
     public void validate(Object o, Errors errors) {
         User user = (User) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username",  Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"unp", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"organization", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position", Error.EMPTY_FIElD_STATUS, Error.EMPTY_FIElD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"unp", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"organization", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
 
         if(userService.findByUsername(user.getUsername()) != null){
             errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS,Error.DUPLICATED_ENTITY_MESSAGE);

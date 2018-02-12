@@ -2,7 +2,7 @@ package com.model;
 
 import java.util.List;
 
-public class RequestWrapper
+public class RequestWrapper extends Product
 {
     private Long agent_id;
     private List<Product> products;
@@ -22,4 +22,6 @@ public class RequestWrapper
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+
 }
