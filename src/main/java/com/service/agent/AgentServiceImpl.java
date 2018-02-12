@@ -79,9 +79,7 @@ public class AgentServiceImpl implements AgentService {
         agnt.setOrganization(agent.getOrganization());
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
-/*
-        agnt.setUser(userDAO.findByUsername(username));
-*/
+
         return agentDAO.save(agnt);
     }
 

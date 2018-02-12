@@ -8,9 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
-import java.util.EmptyStackException;
-
 @Service
 public class SecurityServiceImpl implements SecurityService {
 

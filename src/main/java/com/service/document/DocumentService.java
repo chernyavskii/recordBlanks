@@ -18,6 +18,5 @@ public interface DocumentService {
     File createFileTN();
     HSSFWorkbook preparationFileTN(File file, String username, Long id, List<Product> products) throws IOException;
     File writeToFileTN(File file, HSSFWorkbook workbook) throws IOException;
-    //Object writeToFileTN(String username, Long id, List<Product> products) throws IOException;
 }
 

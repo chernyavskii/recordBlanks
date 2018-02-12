@@ -1,9 +1,7 @@
 package com.validator;
 
 import com.errors.Error;
-import com.model.Document;
 import com.model.Product;
-import com.model.RequestWrapper;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
