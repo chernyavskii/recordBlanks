@@ -21,7 +21,7 @@
         "operationId" : "getAgentsInJSON",
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return list of agents",
             "schema" : {
               "$ref" : "#/definitions/Agent"
             }
@@ -49,13 +49,25 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return a new Agent",
             "schema" : {
               "$ref" : "#/definitions/Agent"
             }
           },
-          "422" : {
-            "description" : "Wrong parameters",
+          "400" : {
+            "description" : "'unp' a field must be 9 characters",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "409" : {
+            "description" : "'unp' already exist in system",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "server error",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
@@ -78,7 +90,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return Agent",
             "schema" : {
               "$ref" : "#/definitions/Agent"
             }
@@ -93,7 +105,7 @@
       },
       "put" : {
         "tags" : [ "AgentsControllerAPI" ],
-        "summary" : "Put Agent by ID",
+        "summary" : "Update Agent by ID",
         "description" : "",
         "operationId" : "updateAgentInJSON",
         "parameters" : [ {
@@ -112,15 +124,9 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success response",
+            "description" : "Return Agent",
             "schema" : {
               "$ref" : "#/definitions/Agent"
-            }
-          },
-          "400" : {
-            "description" : "Invalid ID supplied",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
             }
           },
           "404" : {
@@ -324,13 +330,25 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Return updated user",
+            "description" : "Return updated User",
             "schema" : {
               "$ref" : "#/definitions/User"
             }
           },
-          "404" : {
-            "description" : "User not found",
+          "400" : {
+            "description" : "'username' a field must be bellow 5 characters",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "409" : {
+            "description" : "'username' already exist in system",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "500" : {
+            "description" : "server error",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
