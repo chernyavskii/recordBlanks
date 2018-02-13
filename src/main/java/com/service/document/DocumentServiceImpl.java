@@ -3,10 +3,8 @@ package com.service.document;
 import com.dao.DocumentDAO;
 import com.dao.UserDAO;
 import com.ibm.icu.text.RuleBasedNumberFormat;
-import com.model.Agent;
-import com.model.Document;
-import com.model.Product;
-import com.model.User;
+import com.model.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -43,12 +41,13 @@ public class DocumentServiceImpl implements DocumentService {
             {
                 document = doc;
                 Files.write(Paths.get("d:/files/" + doc.getName()), doc.getDocument());
+                return document;
             }
         }
-        return  document;
+        return  null;
     }
 
-    public Object deleteDocument(String username, Long id)
+    public Document deleteDocument(String username, Long id)
     {
         Document document = new Document();
         for(Document doc : userDAO.findByUsername(username).getDocuments())
@@ -57,14 +56,21 @@ public class DocumentServiceImpl implements DocumentService {
             {
                 document = doc;
                 documentDAO.delete(id);
+                return document;
             }
         }
-        return document;
+        return null;
     }
 
     public File createFileTN()
     {
         File file = new File(getClass().getClassLoader().getResource("files/tn.xls").getFile());
+        return file;
+    }
+
+    public File createFileTTN()
+    {
+        File file = new File(getClass().getClassLoader().getResource("files/ttn.xls").getFile());
         return file;
     }
 
@@ -143,6 +149,147 @@ public class DocumentServiceImpl implements DocumentService {
         return workbook;
     }
 
+    public HSSFWorkbook preparationFileTTN(File file, String username, Long agent_id, Long driver_id, List<Product> products) throws IOException
+    {
+        FileInputStream inputStream = new FileInputStream(file);
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheetAt(0);
+        HSSFSheet sheet1 = workbook.getSheetAt(1);
+        RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
+        Date date = new Date();
+        SimpleDateFormat day = new SimpleDateFormat("dd");
+        Locale locale = new Locale("ru", "RU");
+        SimpleDateFormat month = new SimpleDateFormat("MMMM", locale);
+        SimpleDateFormat year = new SimpleDateFormat("yy");
+        User user = userDAO.findByUsername(username);
+        Agent agent = new Agent();
+        for(Agent agnt : user.getAgents())
+        {
+            if(agent_id == agnt.getId())
+            {
+                agent = agnt;
+            }
+        }
+        Driver driver = new Driver();
+        for(Driver drv : user.getDrivers())
+        {
+            if(driver_id == drv.getId())
+            {
+                driver = drv;
+            }
+        }
+        Long sumNumber = 0L;
+        Double sumCost = 0D;
+        Double sumNDS = 0D;
+        Double sumCostNDS = 0D;
+        Long sumWeight = 0L;
+        Long sumPackageNumber = 0L;
+        sheet.getRow(3).getCell(37).setCellValue(user.getUnp());
+        sheet.getRow(3).getCell(50).setCellValue(agent.getUnp());
+        sheet.getRow(15).getCell(2).setCellValue(day.format(date));
+        sheet.getRow(15).getCell(9).setCellValue(month.format(date));
+        sheet.getRow(15).getCell(35).setCellValue(year.format(date));
+        sheet.getRow(16).getCell(13).setCellValue(driver.getCarModel() + " " + driver.getCarNumber());
+        if(driver.getTrailerModel() == null || driver.getTrailerNumber() == null)
+        {
+            sheet.getRow(16).getCell(87).setCellValue("-");
+        }
+        else
+        {
+            sheet.getRow(16).getCell(87).setCellValue(driver.getTrailerModel() + " " + driver.getTrailerNumber());
+        }
+        sheet.getRow(20).getCell(10).setCellValue(driver.getLastName() + " " + driver.getFirstName() + " " + driver.getMiddleName());
+        sheet.getRow(26).getCell(17).setCellValue(user.getOrganization() + " " + user.getAddress());
+        sheet.getRow(28).getCell(17).setCellValue(agent.getOrganization() + " " + agent.getAddress());
+        sheet.getRow(32).getCell(16).setCellValue(user.getAddress());
+        sheet.getRow(32).getCell(86).setCellValue(agent.getAddress());
+        if(products.size() == 1)
+        {
+            sumNDS = products.get(0).getNumber() * products.get(0).getPrice() * 0.2;
+            sumCostNDS = sumNDS + products.get(0).getNumber() * products.get(0).getPrice();
+            sumWeight = products.get(0).getWeight();
+            sumPackageNumber = products.get(0).getPackageNumber();
+            Long rubNDS = sumNDS.longValue();
+            Double copNDS = (sumNDS - rubNDS) * 100;
+            Long rubCostNDS = sumCostNDS.longValue();
+            Double copCostNDS = (sumCostNDS - rubCostNDS) * 100;
+            sheet.getRow(42).getCell(0).setCellValue(products.get(0).getName());
+            sheet.getRow(42).getCell(31).setCellValue(products.get(0).getMeasure());
+            sheet.getRow(42).getCell(49).setCellValue(products.get(0).getPrice());
+            sheet.getRow(42).getCell(74).setCellValue(20);
+            for(int i = 0; i < 2; i++)
+            {
+                sheet.getRow(42 + i).getCell(40).setCellValue(products.get(0).getNumber());
+                sheet.getRow(42 + i).getCell(62).setCellValue(products.get(0).getNumber() * products.get(0).getPrice());
+                sheet.getRow(42 + i).getCell(81).setCellValue(sumNDS);
+                sheet.getRow(42 + i).getCell(92).setCellValue(sumCostNDS);
+                sheet.getRow(42 + i).getCell(104).setCellValue(sumPackageNumber);
+                sheet.getRow(42 + i).getCell(113).setCellValue(sumWeight);
+            }
+            sheet.getRow(42).getCell(123).setCellValue(products.get(0).getNote());
+            sheet.getRow(45).getCell(18).setCellValue(nf.format(rubNDS));
+            sheet.getRow(45).getCell(107).setCellValue(copNDS);
+            sheet.getRow(48).getCell(22).setCellValue(nf.format(rubCostNDS));
+            sheet.getRow(48).getCell(107).setCellValue(copCostNDS);
+            sheet.getRow(50).getCell(14).setCellValue(nf.format(sumWeight) + "кг.");
+            sheet.getRow(50).getCell(86).setCellValue(nf.format(sumPackageNumber));
+        }
+        if(products.size() > 1)
+        {
+            sheet.getRow(42).getCell(0).setCellValue("Товар в приложении №1");
+            sheet.getRow(42).getCell(31).setCellValue("x");
+            sheet.getRow(42).getCell(49).setCellValue("x");
+            sheet.getRow(42).getCell(74).setCellValue("x");
+            sheet.getRow(42).getCell(123).setCellValue("x");
+            for(int i = 0; i < products.size(); i++)
+            {
+                //sheet1.getRow(2).getCell(8).setCellValue(date);
+                sheet1.getRow(6 + i).getCell(0).setCellValue(products.get(i).getName());
+                sheet1.getRow(6 + i).getCell(1).setCellValue(products.get(i).getMeasure());
+                sheet1.getRow(6 + i).getCell(2).setCellValue(products.get(i).getNumber());
+                sumNumber += products.get(i).getNumber();
+                sheet1.getRow(6 + i).getCell(3).setCellValue(products.get(i).getPrice());
+                sheet1.getRow(6 + i).getCell(4).setCellValue(products.get(i).getNumber() * products.get(i).getPrice());
+                sumCost += products.get(i).getNumber() * products.get(i).getPrice();
+                sheet1.getRow(6 + i).getCell(5).setCellValue(20);
+                sheet1.getRow(6 + i).getCell(6).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() * 0.2);
+                sumNDS += products.get(i).getNumber() * products.get(i).getPrice() * 0.2;
+                sheet1.getRow(6 + i).getCell(7).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() + products.get(i).getNumber() * products.get(i).getPrice() * 0.2);
+                sumCostNDS += products.get(i).getNumber() * products.get(i).getPrice() + products.get(i).getNumber() * products.get(i).getPrice() * 0.2;
+                sheet1.getRow(6 + i).getCell(8).setCellValue(products.get(i).getPackageNumber());
+                sumPackageNumber += products.get(i).getPackageNumber();
+                sheet1.getRow(6 + i).getCell(9).setCellValue(products.get(i).getWeight());
+                sumWeight += products.get(i).getWeight();
+                sheet1.getRow(6 + i).getCell(10).setCellValue(products.get(i).getNote());
+            }
+            Long rubNDS = sumNDS.longValue();
+            Double copNDS = (sumNDS - rubNDS) * 100;
+            Long rubCostNDS = sumCostNDS.longValue();
+            Double copCostNDS = (sumCostNDS - rubCostNDS) * 100;
+            sheet1.getRow(46).getCell(2).setCellValue(sumNumber);
+            sheet1.getRow(46).getCell(4).setCellValue(sumCost);
+            sheet1.getRow(46).getCell(6).setCellValue(sumNDS);
+            sheet1.getRow(46).getCell(7).setCellValue(sumCostNDS);
+            sheet1.getRow(46).getCell(8).setCellValue(sumPackageNumber);
+            sheet1.getRow(46).getCell(9).setCellValue(sumWeight);
+            sheet.getRow(45).getCell(18).setCellValue(nf.format(rubNDS));
+            sheet.getRow(45).getCell(107).setCellValue(copNDS);
+            sheet.getRow(48).getCell(22).setCellValue(nf.format(rubCostNDS));
+            sheet.getRow(48).getCell(107).setCellValue(copCostNDS);
+            sheet.getRow(50).getCell(14).setCellValue(nf.format(sumWeight) + "кг.");
+            sheet.getRow(50).getCell(86).setCellValue(nf.format(sumPackageNumber));
+        }
+        sheet.getRow(52).getCell(14).setCellValue(user.getPosition());
+        sheet.getRow(52).getCell(82).setCellValue(agent.getPosition());
+        sheet.getRow(54).getCell(0).setCellValue(user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName());
+        sheet.getRow(54).getCell(62).setCellValue(agent.getLastName() + " " + agent.getFirstName() + " " + agent.getMiddleName());
+        sheet.getRow(56).getCell(18).setCellValue(user.getPosition());
+        sheet.getRow(58).getCell(0).setCellValue(user.getLastName() + " " + user.getFirstName() + " " + user.getMiddleName());
+        sheet.getRow(60).getCell(81).setCellValue(agent.getPosition());
+        sheet.getRow(62).getCell(62).setCellValue(agent.getLastName() + " " + agent.getFirstName() + " " + agent.getMiddleName());
+        return workbook;
+    }
+
     public File writeToFileTN(File file, HSSFWorkbook workbook) throws IOException
     {
         FileOutputStream out = new FileOutputStream(file);
@@ -151,12 +298,37 @@ public class DocumentServiceImpl implements DocumentService {
         return file;
     }
 
-    public Object addDocumentTN(String username, Long id, List<Product> products) throws IOException
+    public File writeToFileTTN(File file, HSSFWorkbook workbook) throws IOException
+    {
+        FileOutputStream out = new FileOutputStream(file);
+        workbook.write(out);
+        out.close();
+        return file;
+    }
+
+    public Document addDocumentTN(String username, Long id, List<Product> products) throws IOException
     {
         File file = createFileTN();
+        byte[] b = Files.readAllBytes(file.toPath());
         HSSFWorkbook workbook = preparationFileTN(file, username, id, products);
         File newFile = writeToFileTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
+        FileUtils.writeByteArrayToFile(file, b);
+        Document doc = new Document();
+        doc.setDocument(document);
+        doc.setName(newFile.getName());
+        doc.setUser(userDAO.findByUsername(username));
+        return documentDAO.save(doc);
+    }
+
+    public Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException
+    {
+        File file = createFileTTN();
+        byte[] b = Files.readAllBytes(file.toPath());
+        HSSFWorkbook workbook = preparationFileTTN(file, username, agent_id, driver_id, products);
+        File newFile = writeToFileTTN(file, workbook);
+        byte[] document = Files.readAllBytes(newFile.toPath());
+        FileUtils.writeByteArrayToFile(file, b);
         Document doc = new Document();
         doc.setDocument(document);
         doc.setName(newFile.getName());

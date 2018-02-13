@@ -2,9 +2,10 @@ package com.model;
 
 import java.util.List;
 
-public class RequestWrapper extends Product
+public class RequestWrapper
 {
     private Long agent_id;
+    private Long driver_id;
     private List<Product> products;
 
     public Long getAgent_id() {
@@ -15,6 +16,14 @@ public class RequestWrapper extends Product
         this.agent_id = agent_id;
     }
 
+    public Long getDriver_id() {
+        return driver_id;
+    }
+
+    public void setDriver_id(Long driver_id) {
+        this.driver_id = driver_id;
+    }
+
     public List<Product> getProducts() {
         return products;
     }
@@ -22,6 +31,4 @@ public class RequestWrapper extends Product
     public void setProducts(List<Product> products) {
         this.products = products;
     }
-
-
 }

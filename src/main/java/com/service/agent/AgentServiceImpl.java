@@ -34,9 +34,10 @@ public class AgentServiceImpl implements AgentService {
             if(id == agn.getId())
             {
                 agent = agn;
+                return  agent;
             }
         }
-        return  agent;
+        return  null;
 
     }
 
@@ -64,9 +65,10 @@ public class AgentServiceImpl implements AgentService {
             {
                 agent = agn;
                 agentDAO.delete(id);
+                return  agent;
             }
         }
-        return  agent;
+        return  null;
     }
 
     public Agent updateAgent(String username, Long id, Agent agent)
@@ -79,7 +81,6 @@ public class AgentServiceImpl implements AgentService {
         agnt.setOrganization(agent.getOrganization());
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
-
         return agentDAO.save(agnt);
     }
 

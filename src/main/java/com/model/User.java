@@ -16,6 +16,7 @@ public class User {
     private String position;
     private String address;
     private Set<Agent> agents;
+    private Set<Driver> drivers;
     private Set<Document> documents;
     private Set<Role> roles;
 
@@ -126,6 +127,15 @@ public class User {
 
     public void setAgents(Set<Agent> agents) {
         this.agents = agents;
+    }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    public Set<Driver> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(Set<Driver> drivers) {
+        this.drivers = drivers;
     }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

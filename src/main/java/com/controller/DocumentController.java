@@ -100,4 +100,10 @@ public class DocumentController
             return new ResponseEntity<Object>(documentService.deleteDocument(principal.getName(), id), HttpStatus.OK);
         }
     }
+
+    @RequestMapping(value = "/ttn", method = RequestMethod.POST)
+    public @ResponseBody Document addDocumentTTN(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException
+    {
+        return documentService.addDocumentTTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts());
+    }
 }

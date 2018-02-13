@@ -6,6 +6,8 @@ public class Product
     private String measure;
     private Long number;
     private Double price;
+    private Long packageNumber;
+    private Long weight;
     private String note = "-";
 
     public String getName() {
@@ -38,6 +40,22 @@ public class Product
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Long getPackageNumber() {
+        return packageNumber;
+    }
+
+    public void setPackageNumber(Long packageNumber) {
+        this.packageNumber = packageNumber;
+    }
+
+    public Long getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Long weight) {
+        this.weight = weight;
     }
 
     public String getNote() {
