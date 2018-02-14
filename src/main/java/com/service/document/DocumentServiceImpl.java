@@ -79,6 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
         FileInputStream inputStream = new FileInputStream(file);
         HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheetAt(0);
+        HSSFSheet sheet1 = workbook.getSheetAt(1);
         RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
         Date date = new Date();
         SimpleDateFormat day = new SimpleDateFormat("dd");
@@ -137,6 +138,45 @@ public class DocumentServiceImpl implements DocumentService {
             sheet.getRow(32).getCell(51).setCellValue(sumCost);
             sheet.getRow(32).getCell(71).setCellValue(sumNDS);
             sheet.getRow(32).getCell(80).setCellValue(sumCostNDS);
+            sheet.getRow(34).getCell(18).setCellValue(nf.format(rubNDS));
+            sheet.getRow(34).getCell(75).setCellValue(copNDS);
+            sheet.getRow(37).getCell(22).setCellValue(nf.format(rubCostNDS));
+            sheet.getRow(37).getCell(75).setCellValue(copCostNDS);
+        }
+        if(products.size() > 3)
+        {
+            sheet.getRow(29).getCell(0).setCellValue("Товар в приложении №1");
+            for(int i = 0; i < 3; i++)
+            {
+                sheet.getRow(29 + i).getCell(22).setCellValue("x");
+                sheet.getRow(29 + i).getCell(41).setCellValue("x");
+                sheet.getRow(29 + i).getCell(62).setCellValue("x");
+            }
+            for(int i = 0; i < products.size(); i++)
+            {
+                sheet1.getRow(2).getCell(6).setCellValue(new SimpleDateFormat("dd.MM.yyyy").format(date));
+                sheet1.getRow(6 + i).getCell(0).setCellValue(products.get(i).getName());
+                sheet1.getRow(6 + i).getCell(1).setCellValue(products.get(i).getMeasure());
+                sheet1.getRow(6 + i).getCell(2).setCellValue(products.get(i).getNumber());
+                sumNumber += products.get(i).getNumber();
+                sheet1.getRow(6 + i).getCell(3).setCellValue(products.get(i).getPrice());
+                sheet1.getRow(6 + i).getCell(4).setCellValue(products.get(i).getNumber() * products.get(i).getPrice());
+                sumCost += products.get(i).getNumber() * products.get(i).getPrice();
+                sheet1.getRow(6 + i).getCell(5).setCellValue(20);
+                sheet1.getRow(6 + i).getCell(6).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() * 0.2);
+                sumNDS += products.get(i).getNumber() * products.get(i).getPrice() * 0.2;
+                sheet1.getRow(6 + i).getCell(7).setCellValue(products.get(i).getNumber() * products.get(i).getPrice() + products.get(i).getNumber() * products.get(i).getPrice() * 0.2);
+                sumCostNDS += products.get(i).getNumber() * products.get(i).getPrice() + products.get(i).getNumber() * products.get(i).getPrice() * 0.2;
+                sheet1.getRow(6 + i).getCell(8).setCellValue(products.get(i).getNote());
+            }
+            Long rubNDS = sumNDS.longValue();
+            Double copNDS = (sumNDS - rubNDS) * 100;
+            Long rubCostNDS = sumCostNDS.longValue();
+            Double copCostNDS = (sumCostNDS - rubCostNDS) * 100;
+            sheet1.getRow(47).getCell(2).setCellValue(sumNumber);
+            sheet1.getRow(47).getCell(4).setCellValue(sumCost);
+            sheet1.getRow(47).getCell(6).setCellValue(sumNDS);
+            sheet1.getRow(47).getCell(7).setCellValue(sumCostNDS);
             sheet.getRow(34).getCell(18).setCellValue(nf.format(rubNDS));
             sheet.getRow(34).getCell(75).setCellValue(copNDS);
             sheet.getRow(37).getCell(22).setCellValue(nf.format(rubCostNDS));
@@ -243,7 +283,7 @@ public class DocumentServiceImpl implements DocumentService {
             sheet.getRow(42).getCell(123).setCellValue("x");
             for(int i = 0; i < products.size(); i++)
             {
-                //sheet1.getRow(2).getCell(8).setCellValue(date);
+                sheet1.getRow(2).getCell(8).setCellValue(new SimpleDateFormat("dd.MM.yyyy").format(date));
                 sheet1.getRow(6 + i).getCell(0).setCellValue(products.get(i).getName());
                 sheet1.getRow(6 + i).getCell(1).setCellValue(products.get(i).getMeasure());
                 sheet1.getRow(6 + i).getCell(2).setCellValue(products.get(i).getNumber());
@@ -314,9 +354,11 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
+        Date date = new Date();
         Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName());
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(date) + ")");
+        doc.setDate(date);
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }
@@ -329,9 +371,10 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileTTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
+        Date date = new Date();
         Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName());
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(date) + ")");
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }
