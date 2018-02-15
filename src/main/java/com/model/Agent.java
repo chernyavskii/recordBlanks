@@ -14,6 +14,11 @@ public class Agent {
     private String organization;
     private String position;
     private String address;
+    private String rs;
+    private String ks;
+    private String bank;
+    private String bik;
+    private String phone;
     private User user;
 
     @Id
@@ -94,6 +99,56 @@ public class Agent {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Basic
+    @Column(name = "rs")
+    public String getRs() {
+        return rs;
+    }
+
+    public void setRs(String rs) {
+        this.rs = rs;
+    }
+
+    @Basic
+    @Column(name = "ks")
+    public String getKs() {
+        return ks;
+    }
+
+    public void setKs(String ks) {
+        this.ks = ks;
+    }
+
+    @Basic
+    @Column(name = "bank")
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    @Basic
+    @Column(name = "bik")
+    public String getBik() {
+        return bik;
+    }
+
+    public void setBik(String bik) {
+        this.bik = bik;
+    }
+
+    @Basic
+    @Column(name = "phone")
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

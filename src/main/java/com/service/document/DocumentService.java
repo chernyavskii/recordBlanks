@@ -1,10 +1,10 @@
 package com.service.document;
 
-import com.model.Agent;
 import com.model.Document;
 import com.model.Product;
+import com.model.Work;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -15,12 +15,16 @@ public interface DocumentService {
     Document getDocumentById(String username, Long id) throws IOException;
     Document addDocumentTN(String username, Long id, List<Product> products) throws IOException;
     Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException;
+    Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException;
     Document deleteDocument(String username, Long id);
     File createFileTN();
     File createFileTTN();
+    File createFileASPR();
     HSSFWorkbook preparationFileTN(File file, String username, Long id, List<Product> products) throws IOException;
     HSSFWorkbook preparationFileTTN(File file, String username, Long agent_id, Long driver_id, List<Product> products) throws IOException;
+    XSSFWorkbook preparationFileASPR(File file, String username, Long agent_id, List<Work> works) throws IOException;
     File writeToFileTN(File file, HSSFWorkbook workbook) throws IOException;
     File writeToFileTTN(File file, HSSFWorkbook workbook) throws IOException;
+    File writeToFileASPR(File file, XSSFWorkbook workbook) throws IOException;
 }
 

@@ -7,6 +7,7 @@ public class RequestWrapper
     private Long agent_id;
     private Long driver_id;
     private List<Product> products;
+    private List<Work> works;
 
     public Long getAgent_id() {
         return agent_id;
@@ -30,5 +31,13 @@ public class RequestWrapper
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public List<Work> getWorks() {
+        return works;
+    }
+
+    public void setWorks(List<Work> works) {
+        this.works = works;
     }
 }

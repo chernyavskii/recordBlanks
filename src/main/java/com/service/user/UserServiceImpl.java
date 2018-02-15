@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
         role.setName(ROLE_USER);
         role.setUser(user);
         roleDAO.save(role);
-
        return user;
     }
 
@@ -66,9 +65,7 @@ public class UserServiceImpl implements UserService {
         agentDAO.delete(user.getAgents());
         roleDAO.delete(user.getRoles());
         documentDAO.delete(user.getDocuments());
-
         userDAO.delete(id);
-
         return "{\"success\":true}";
     }
 
@@ -84,7 +81,11 @@ public class UserServiceImpl implements UserService {
         findUser.setOrganization(user.getOrganization());
         findUser.setPosition(user.getPosition());
         findUser.setUnp(user.getUnp());
-
+        findUser.setRs(user.getRs());
+        findUser.setKs(user.getKs());
+        findUser.setBank(user.getBank());
+        findUser.setBik(user.getBik());
+        findUser.setPhone(user.getPhone());
         return userDAO.save(findUser);
     }
 

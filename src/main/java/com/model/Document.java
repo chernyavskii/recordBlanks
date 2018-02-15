@@ -1,18 +1,15 @@
 package com.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Date;
 
 @Entity
 public class Document {
     private Long id;
     private String name;
     private byte[] document;
-    private Date date;
+    private String date;
     private User user;
 
     @Id
@@ -48,11 +45,11 @@ public class Document {
 
     @Basic
     @Column(name = "date")
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

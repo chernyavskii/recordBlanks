@@ -106,4 +106,10 @@ public class DocumentController
     {
         return documentService.addDocumentTTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts());
     }
+
+    @RequestMapping(value = "/aspr", method = RequestMethod.POST)
+    public @ResponseBody Document addDocumentASPR(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException
+    {
+        return documentService.addDocumentASPR(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getWorks());
+    }
 }

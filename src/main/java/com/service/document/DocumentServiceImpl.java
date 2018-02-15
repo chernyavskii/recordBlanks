@@ -8,6 +8,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +73,12 @@ public class DocumentServiceImpl implements DocumentService {
     public File createFileTTN()
     {
         File file = new File(getClass().getClassLoader().getResource("files/ttn.xls").getFile());
+        return file;
+    }
+
+    public File createFileASPR()
+    {
+        File file = new File(getClass().getClassLoader().getResource("files/aspr.xlsx").getFile());
         return file;
     }
 
@@ -330,6 +338,43 @@ public class DocumentServiceImpl implements DocumentService {
         return workbook;
     }
 
+    public XSSFWorkbook preparationFileASPR(File file, String username, Long agent_id, List<Work> works) throws IOException
+    {
+        FileInputStream inputStream = new FileInputStream(file);
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
+        User user = userDAO.findByUsername(username);
+        Agent agent = new Agent();
+        for(Agent agnt : user.getAgents())
+        {
+            if(agent_id == agnt.getId())
+            {
+                agent = agnt;
+            }
+        }
+        Double sumCostNDS = 0D;
+        sheet.getRow(7).getCell(10).setCellValue(user.getOrganization());
+        sheet.getRow(8).getCell(8).setCellValue(agent.getOrganization());
+        if(works.size() <= 3)
+        {
+            for(int i = 0; i < works.size(); i++)
+            {
+                sheet.getRow(12 + i).getCell(0).setCellValue(1 + i);
+                sheet.getRow(12 + i).getCell(1).setCellValue(works.get(i).getName());
+                sheet.getRow(12 + i).getCell(10).setCellValue(works.get(i).getPrice());
+                sheet.getRow(12 + i).getCell(14).setCellValue(works.get(i).getPrice() * 0.2);
+                sheet.getRow(12 + i).getCell(17).setCellValue(works.get(i).getPrice() * 0.2 + works.get(i).getPrice());
+                sumCostNDS += works.get(i).getPrice() * 0.2 + works.get(i).getPrice();
+            }
+            Long rubCostNDS = sumCostNDS.longValue();
+            Double copCostNDS = (sumCostNDS - rubCostNDS) * 100;
+            sheet.getRow(15).getCell(17).setCellValue(sumCostNDS);
+            sheet.getRow(18).getCell(0).setCellValue(nf.format(rubCostNDS) + " руб. " + copCostNDS + " коп.");
+        }
+        return workbook;
+    }
+
     public File writeToFileTN(File file, HSSFWorkbook workbook) throws IOException
     {
         FileOutputStream out = new FileOutputStream(file);
@@ -346,6 +391,14 @@ public class DocumentServiceImpl implements DocumentService {
         return file;
     }
 
+    public File writeToFileASPR(File file, XSSFWorkbook workbook) throws IOException
+    {
+        FileOutputStream out = new FileOutputStream(file);
+        workbook.write(out);
+        out.close();
+        return file;
+    }
+
     public Document addDocumentTN(String username, Long id, List<Product> products) throws IOException
     {
         File file = createFileTN();
@@ -355,10 +408,11 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
         Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(date) + ")");
-        doc.setDate(date);
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }
@@ -372,9 +426,29 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
         Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(date) + ")");
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setDate(sdf.format(date));
+        doc.setUser(userDAO.findByUsername(username));
+        return documentDAO.save(doc);
+    }
+
+    public Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException
+    {
+        File file = createFileASPR();
+        byte[] b = Files.readAllBytes(file.toPath());
+        XSSFWorkbook workbook = preparationFileASPR(file, username, agent_id, works);
+        File newFile = writeToFileASPR(file, workbook);
+        byte[] document = Files.readAllBytes(newFile.toPath());
+        FileUtils.writeByteArrayToFile(file, b);
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
+        Document doc = new Document();
+        doc.setDocument(document);
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }

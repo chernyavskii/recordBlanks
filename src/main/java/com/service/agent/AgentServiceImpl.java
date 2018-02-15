@@ -51,8 +51,12 @@ public class AgentServiceImpl implements AgentService {
         agnt.setOrganization(agent.getOrganization());
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
+        agnt.setRs(agent.getRs());
+        agnt.setKs(agent.getKs());
+        agnt.setBank(agent.getBank());
+        agnt.setBik(agent.getBik());
+        agnt.setPhone(agent.getPhone());
         agnt.setUser(userDAO.findByUsername(username));
-
         return agentDAO.save(agnt);
     }
 
@@ -81,6 +85,11 @@ public class AgentServiceImpl implements AgentService {
         agnt.setOrganization(agent.getOrganization());
         agnt.setPosition(agent.getPosition());
         agnt.setAddress(agent.getAddress());
+        agnt.setRs(agent.getRs());
+        agnt.setKs(agent.getKs());
+        agnt.setBank(agent.getBank());
+        agnt.setBik(agent.getBik());
+        agnt.setPhone(agent.getPhone());
         return agentDAO.save(agnt);
     }
 
