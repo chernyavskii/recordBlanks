@@ -279,7 +279,7 @@ public class DocumentServiceImpl implements DocumentService {
             sheet.getRow(45).getCell(107).setCellValue(copNDS);
             sheet.getRow(48).getCell(22).setCellValue(nf.format(rubCostNDS));
             sheet.getRow(48).getCell(107).setCellValue(copCostNDS);
-            sheet.getRow(50).getCell(14).setCellValue(nf.format(sumWeight) + "кг.");
+            sheet.getRow(50).getCell(14).setCellValue(nf.format(sumWeight) + " кг.");
             sheet.getRow(50).getCell(86).setCellValue(nf.format(sumPackageNumber));
         }
         if(products.size() > 1)
@@ -353,6 +353,7 @@ public class DocumentServiceImpl implements DocumentService {
                 agent = agnt;
             }
         }
+        Double sumNDS = 0D;
         Double sumCostNDS = 0D;
         sheet.getRow(7).getCell(10).setCellValue(user.getOrganization());
         sheet.getRow(8).getCell(8).setCellValue(agent.getOrganization());
@@ -365,12 +366,30 @@ public class DocumentServiceImpl implements DocumentService {
                 sheet.getRow(12 + i).getCell(10).setCellValue(works.get(i).getPrice());
                 sheet.getRow(12 + i).getCell(14).setCellValue(works.get(i).getPrice() * 0.2);
                 sheet.getRow(12 + i).getCell(17).setCellValue(works.get(i).getPrice() * 0.2 + works.get(i).getPrice());
-                sumCostNDS += works.get(i).getPrice() * 0.2 + works.get(i).getPrice();
+                sumNDS += works.get(i).getPrice() * 0.2;
+                sumCostNDS += works.get(i).getPrice();
             }
+            sumCostNDS += sumNDS;
             Long rubCostNDS = sumCostNDS.longValue();
             Double copCostNDS = (sumCostNDS - rubCostNDS) * 100;
             sheet.getRow(15).getCell(17).setCellValue(sumCostNDS);
-            sheet.getRow(18).getCell(0).setCellValue(nf.format(rubCostNDS) + " руб. " + copCostNDS + " коп.");
+            sheet.getRow(18).getCell(0).setCellValue(nf.format(rubCostNDS) + " руб. " + copCostNDS.longValue() + " коп.");
+            sheet.getRow(19).getCell(3).setCellValue(user.getOrganization());
+            sheet.getRow(19).getCell(13).setCellValue(agent.getOrganization());
+            sheet.getRow(21).getCell(1).setCellValue(user.getUnp());
+            sheet.getRow(21).getCell(12).setCellValue(agent.getUnp());
+            sheet.getRow(22).getCell(1).setCellValue(user.getAddress());
+            sheet.getRow(22).getCell(12).setCellValue(agent.getAddress());
+            sheet.getRow(24).getCell(1).setCellValue(user.getRs());
+            sheet.getRow(24).getCell(11).setCellValue(agent.getRs());
+            sheet.getRow(25).getCell(1).setCellValue(user.getKs());
+            sheet.getRow(25).getCell(11).setCellValue(agent.getKs());
+            sheet.getRow(26).getCell(1).setCellValue(user.getBank());
+            sheet.getRow(26).getCell(12).setCellValue(agent.getBank());
+            sheet.getRow(28).getCell(1).setCellValue(user.getBik());
+            sheet.getRow(28).getCell(12).setCellValue(agent.getBik());
+            sheet.getRow(29).getCell(2).setCellValue(user.getPhone());
+            sheet.getRow(29).getCell(13).setCellValue(agent.getPhone());
         }
         return workbook;
     }
