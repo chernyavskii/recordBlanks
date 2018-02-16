@@ -413,6 +413,21 @@
         "address" : {
           "type" : "string"
         },
+        "rs" : {
+          "type" : "string"
+        },
+        "ks" : {
+          "type" : "string"
+        },
+        "bank" : {
+          "type" : "string"
+        },
+        "bik" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
         "user" : {
           "$ref" : "#/definitions/User"
         }
@@ -434,6 +449,42 @@
             "type" : "string",
             "format" : "byte"
           }
+        },
+        "date" : {
+          "type" : "string"
+        },
+        "user" : {
+          "$ref" : "#/definitions/User"
+        }
+      }
+    },
+    "Driver" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "middleName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "carModel" : {
+          "type" : "string"
+        },
+        "carNumber" : {
+          "type" : "string"
+        },
+        "trailerModel" : {
+          "type" : "string"
+        },
+        "trailerNumber" : {
+          "type" : "string"
         },
         "user" : {
           "$ref" : "#/definitions/User"
@@ -504,11 +555,33 @@
         "address" : {
           "type" : "string"
         },
+        "rs" : {
+          "type" : "string"
+        },
+        "ks" : {
+          "type" : "string"
+        },
+        "bank" : {
+          "type" : "string"
+        },
+        "bik" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
         "agents" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/Agent"
+          }
+        },
+        "drivers" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/Driver"
           }
         },
         "documents" : {
