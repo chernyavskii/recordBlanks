@@ -83,20 +83,8 @@ public class IndexController {
             @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
-        getClass();
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
-/*
             return new ResponseEntity<>(user, HttpStatus.OK);
-*/
-            User findUser = userService.findByUsername(user.getUsername());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
-/*
-            return new ResponseEntity<>(findUser*/
-/*userService.findByUsername(user.getUsername())*//*
-, HttpStatus.OK).;
-*/
-            //ИСПРАВЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
         else {
             Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());
