@@ -1,14 +1,14 @@
 package com.model;
 
 public class Hero {
-    private Integer id;
+    private Long id;
     private String username;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -20,12 +20,16 @@ public class Hero {
         this.username = username;
     }
 
-    public Hero(int id, String username) {
+    public Hero(Long id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Hero{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
     }
 }

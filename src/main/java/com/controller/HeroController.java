@@ -18,15 +18,11 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("heroes")
 public class HeroController {
-
-/*
-    @CrossOrigin
-*/
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<?> getHeroes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        Hero h1 = new Hero(1, "SASHA");
-        Hero h2 = new Hero(2, "MISHA");
+        Hero h1 = new Hero(1L, "SASHA");
+        Hero h2 = new Hero(2L, "MISHA");
 
         List<Hero> list = new ArrayList<>();
         list.add(h1);
@@ -37,9 +33,9 @@ public class HeroController {
     }
 
     @RequestMapping(value = "/mnb", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> createHero(@RequestBody Hero hero) {
-        Hero newHero = new Hero(hero.getId(), hero.getUsername());
+    public @ResponseBody ResponseEntity<?> registration(@RequestBody Hero hero) {
 
-        return new ResponseEntity<>(newHero, HttpStatus.OK);
+
+        return new ResponseEntity<>(hero, HttpStatus.OK);
     }
 }

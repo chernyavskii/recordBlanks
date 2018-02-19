@@ -427,9 +427,6 @@
         },
         "phone" : {
           "type" : "string"
-        },
-        "user" : {
-          "$ref" : "#/definitions/User"
         }
       }
     },
@@ -443,18 +440,8 @@
         "name" : {
           "type" : "string"
         },
-        "document" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string",
-            "format" : "byte"
-          }
-        },
         "date" : {
           "type" : "string"
-        },
-        "user" : {
-          "$ref" : "#/definitions/User"
         }
       }
     },
@@ -485,9 +472,6 @@
         },
         "trailerNumber" : {
           "type" : "string"
-        },
-        "user" : {
-          "$ref" : "#/definitions/User"
         }
       }
     },
@@ -515,9 +499,6 @@
         },
         "name" : {
           "type" : "string"
-        },
-        "user" : {
-          "$ref" : "#/definitions/User"
         }
       }
     },
