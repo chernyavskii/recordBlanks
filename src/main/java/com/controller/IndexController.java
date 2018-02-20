@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 
 @Controller
 @CrossOrigin
@@ -77,14 +78,19 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @CrossOrigin
     @ApiOperation(value = "User login ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return a User",response = User.class),
             @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
-        securityService.autoLogin(user.getUsername(), user.getPassword());
+            securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
+            return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
+
+/*
             return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
+*/
         }
         else {
             Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());
