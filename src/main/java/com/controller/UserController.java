@@ -28,8 +28,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired UserValidator userValidator;
-
+////////////////////////// CRoSS ORIGIN ИЗМЕНИЛ
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @CrossOrigin(origins = "*")
     @ApiOperation(value = "Get list of users", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "List"),
