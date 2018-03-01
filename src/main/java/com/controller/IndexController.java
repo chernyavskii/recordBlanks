@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -113,7 +114,7 @@ public class IndexController {
             return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
 */
 getClass();
-            return new ResponseEntity<>(principal, HttpStatus.OK);
+            return new ResponseEntity<>(RequestContextHolder.currentRequestAttributes().getSessionId(), HttpStatus.OK);
 
 
 /*

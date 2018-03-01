@@ -91,7 +91,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        getClass();
+  /*      User findUser = userDAO.findByUsername(username);
+        String decodedPassword = null;
+        bCryptPasswordEncoder.(decodedPassword,findUser.getPassword());
+        findUser.setPassword(decodedPassword);*/
         return userDAO.findByUsername(username);
     }
 }

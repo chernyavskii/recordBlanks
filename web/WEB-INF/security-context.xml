@@ -7,11 +7,12 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http use-expressions="true" create-session="stateless">
+    <http create-session="ifRequired">
         <intercept-url pattern="/agents/" access="isAuthenticated()"/>
         <intercept-url pattern="/documents/" access="isAuthenticated()"/>
+<!--
         <intercept-url pattern="/users/" access="isAuthenticated()"/>
-        <intercept-url pattern="/main" access="isAuthenticated()"/>
+-->
 
 <!--
         <logout  delete-cookies = "JSESSIONID" />
