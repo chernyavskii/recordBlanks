@@ -7,9 +7,9 @@
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http create-session="ifRequired">
-        <intercept-url pattern="/agents/" access="isAuthenticated()"/>
-        <intercept-url pattern="/documents/" access="isAuthenticated()"/>
+    <http create-session="ifRequired" >
+    <!--    <intercept-url pattern="/agents/" method="GET" access="isAuthenticated()"/>
+        <intercept-url pattern="/documents/" access="isAuthenticated()"/>-->
 <!--
         <intercept-url pattern="/users/" access="isAuthenticated()"/>
 -->
@@ -18,9 +18,11 @@
         <logout  delete-cookies = "JSESSIONID" />
 -->
 
-
+<!--
+        <form-login/>
+-->
         <http-basic />
-        <csrf disabled="true"/>
+        <csrf disabled="true" />
 
 <!--
         <form-login />

@@ -1,5 +1,7 @@
 package com.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -57,6 +59,7 @@ public class User {
 
     @Basic
     @Column(name = "password")
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

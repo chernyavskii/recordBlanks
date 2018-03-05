@@ -86,9 +86,10 @@ public class IndexController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> testLogin(Principal principal){
-        User user = userService.findByUsername(principal.getName());
-        securityService.autoLogin(user.getUsername(), user.getPassword());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+/*
+        securityService.autoLogin("vagabund1", "vagabund1");
+*/
+        return new ResponseEntity<>(principal, HttpStatus.OK);
     }
 ///////////////////// TOKEN SESSION
     @CrossOrigin(origins = "*")

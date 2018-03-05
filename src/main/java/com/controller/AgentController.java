@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Set;
 
+
 @Controller
 @RequestMapping(value = "agents")
 @Api(value = "AgentsControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,6 +31,7 @@ public class AgentController {
     @Autowired
     AgentValidator agentValidator;
 
+    @CrossOrigin
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of agents", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class, responseContainer = "List")
     @ApiResponses(value = {
