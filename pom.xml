@@ -71,6 +71,13 @@
                 <jackson.version>1.9.13</jackson.version>
         -->
     </properties>
+    <repositories>
+        <repository>
+            <id>AsposeJavaAPI</id>
+            <name>Aspose Java API</name>
+            <url>http://maven.aspose.com/repository/simple/ext-release-local/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
        <!-- <dependency>
@@ -284,8 +291,6 @@
             <artifactId>spring-tx</artifactId>
             <version>4.3.10.RELEASE</version>
         </dependency>
-
-
 
     </dependencies>
 </project>

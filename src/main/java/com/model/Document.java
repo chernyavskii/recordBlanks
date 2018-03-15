@@ -8,6 +8,7 @@ import javax.persistence.*;
 public class Document {
     private Long id;
     private String name;
+    private String type;
     private byte[] document;
     private String date;
     private User user;
@@ -30,6 +31,16 @@ public class Document {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Basic
+    @Column(name = "type")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Basic

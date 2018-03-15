@@ -5,6 +5,7 @@ import com.dao.UserDAO;
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import com.model.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -42,7 +43,7 @@ public class DocumentServiceImpl implements DocumentService {
             if(id == doc.getId())
             {
                 document = doc;
-                Files.write(Paths.get("d:/files/" + doc.getName()), doc.getDocument());
+                //Files.write(Paths.get("d:/files/" + doc.getName()), doc.getDocument());
                 return document;
             }
         }
@@ -420,17 +421,18 @@ public class DocumentServiceImpl implements DocumentService {
 
     public Document addDocumentTN(String username, Long id, List<Product> products) throws IOException
     {
+        Document doc = new Document();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
+        Date date = new Date();
         File file = createFileTN();
+        doc.setType(FilenameUtils.getExtension(file.getName()));
         byte[] b = Files.readAllBytes(file.toPath());
         HSSFWorkbook workbook = preparationFileTN(file, username, id, products);
         File newFile = writeToFileTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
-        Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
@@ -438,17 +440,18 @@ public class DocumentServiceImpl implements DocumentService {
 
     public Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException
     {
+        Document doc = new Document();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
+        Date date = new Date();
         File file = createFileTTN();
+        doc.setType(FilenameUtils.getExtension(file.getName()));
         byte[] b = Files.readAllBytes(file.toPath());
         HSSFWorkbook workbook = preparationFileTTN(file, username, agent_id, driver_id, products);
         File newFile = writeToFileTTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
-        Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
@@ -456,17 +459,18 @@ public class DocumentServiceImpl implements DocumentService {
 
     public Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException
     {
+        Document doc = new Document();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
+        Date date = new Date();
         File file = createFileASPR();
+        doc.setType(FilenameUtils.getExtension(file.getName()));
         byte[] b = Files.readAllBytes(file.toPath());
         XSSFWorkbook workbook = preparationFileASPR(file, username, agent_id, works);
         File newFile = writeToFileASPR(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
-        Document doc = new Document();
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")" + newFile.getName().substring(newFile.getName().indexOf('.')));
+        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);

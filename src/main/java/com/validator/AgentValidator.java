@@ -32,13 +32,38 @@ public class AgentValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"organization",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"position",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"rs",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"ks",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"bank",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"bik",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"phone",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
 
-        if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent.getUnp()).booleanValue()){
+        /*if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent.getUnp()).booleanValue()){
             errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
         }
 
         if(agent.getUnp().length() != 9){
             errors.rejectValue("unp", Error.UNP_LENGTH_STATUS, Error.UNP_LENGTH_MESSAGE);
+        }*/
+
+        if(!agent.getUnp().matches("\\d+") || agent.getUnp().length() != 9){
+            errors.rejectValue("unp", Error.UNP_BIK_LENGTH_STATUS, Error.UNP_BIK_LENGTH_MESSAGE);
+        }
+
+        if(!agent.getRs().matches("\\d+") || agent.getRs().length() != 20){
+            errors.rejectValue("rs", Error.RS_KS_LENGTH_STATUS, Error.RS_KS_LENGTH_MESSAGE);
+        }
+
+        if(!agent.getKs().matches("\\d+") || agent.getKs().length() != 20){
+            errors.rejectValue("ks", Error.RS_KS_LENGTH_STATUS, Error.RS_KS_LENGTH_MESSAGE);
+        }
+
+        if(!agent.getBik().matches("\\d+") || agent.getBik().length() != 9){
+            errors.rejectValue("bik", Error.UNP_BIK_LENGTH_STATUS, Error.UNP_BIK_LENGTH_MESSAGE);
+        }
+
+        if(!agent.getPhone().matches("(\\+375 (25|29|33|44) ([0-9]{3}( [0-9]{2}){2}))")){
+            errors.rejectValue("phone", Error.PHONE_INCORRECT_STATUS, Error.PHONE_INCORRECT_MESSAGE);
         }
     }
 }

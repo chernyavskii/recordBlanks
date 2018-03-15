@@ -21,6 +21,7 @@ import java.util.Set;
 
 
 @Controller
+@CrossOrigin
 @RequestMapping(value = "agents")
 @Api(value = "AgentsControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AgentController {
@@ -84,7 +85,7 @@ public class AgentController {
                 case Error.DUPLICATED_ENTITY_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
                     return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
-                case Error.UNP_LENGTH_MESSAGE:
+                case Error.UNP_BIK_LENGTH_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.EMPTY_FIELD_MESSAGE:
@@ -103,11 +104,9 @@ public class AgentController {
     @ApiOperation(value = "Update Agent by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Agent",response = Agent.class),
-            @ApiResponse(code = 404, message = "Agent not found", response = Error.class),
-
+            @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal,
-                                                             @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
         if (agentService.getAgentById(principal.getName(), id) == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -116,7 +115,13 @@ public class AgentController {
             agentValidator.validate(agent, bindingResult);
             if(bindingResult.hasErrors()) {
                 switch (bindingResult.getFieldError().getDefaultMessage()) {
-                    case Error.UNP_LENGTH_MESSAGE:
+                    case Error.UNP_BIK_LENGTH_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.RS_KS_LENGTH_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.PHONE_INCORRECT_MESSAGE:
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.DUPLICATED_ENTITY_MESSAGE:

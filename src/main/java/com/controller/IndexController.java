@@ -18,15 +18,10 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.Map;
 
 @Controller
 @CrossOrigin
@@ -82,41 +77,16 @@ public class IndexController {
         }
     }
 
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    @CrossOrigin(origins = "*")
-    public ResponseEntity<?> testLogin(Principal principal){
-/*
-        securityService.autoLogin("vagabund1", "vagabund1");
-*/
-        return new ResponseEntity<>(principal, HttpStatus.OK);
-    }
-///////////////////// TOKEN SESSION
-    @CrossOrigin(origins = "*")
-    @GetMapping("/token")
-    @ResponseBody
-    public Map<String, String> token(HttpSession session) {
-        return Collections.singletonMap("token", session.getId());
-    }
-
     @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @CrossOrigin
     @ApiOperation(value = "User login ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return a User",response = User.class),
             @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
-    public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult, Principal principal) {
+    public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
             securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
-           /* HttpSession httpSession = request.getSession();
-            getClass();
-            Cookie cookie = new Cookie("Set-Cookie", "JSESSION="+httpSession.getId()+"; Path=/; HttpOnly");
-            response.addCookie(cookie);*/
-/*
             return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
-*/
-getClass();
-            return new ResponseEntity<>(RequestContextHolder.currentRequestAttributes().getSessionId(), HttpStatus.OK);
-
 
 /*
             return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);

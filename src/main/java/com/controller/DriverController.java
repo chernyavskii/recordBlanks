@@ -9,6 +9,7 @@ import java.security.Principal;
 import java.util.Set;
 
 @Controller
+@CrossOrigin
 @RequestMapping(value = "drivers")
 public class DriverController {
 

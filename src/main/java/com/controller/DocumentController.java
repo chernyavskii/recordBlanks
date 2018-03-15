@@ -5,23 +5,23 @@ import com.model.RequestWrapper;
 import com.service.document.DocumentService;
 import com.errors.Error;
 import com.validator.DocumentValidator;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
+import java.io.*;
 import java.security.Principal;
 import java.util.Set;
 
 @Controller
+@CrossOrigin
 @RequestMapping(value = "documents")
+@Api(value = "DocumentControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DocumentController
 {
     @Autowired
@@ -44,21 +44,24 @@ public class DocumentController
             return new ResponseEntity<Set<Document>>(documentList, HttpStatus.OK);
         }
     }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    //@ApiOperation(value = "Get the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Document", response = Document.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> getDocumentByIdInJSON(Principal principal, @PathVariable("id") Long id) throws IOException {
+    public ResponseEntity<?> getDocumentByIdInJSON(Principal principal, @PathVariable("id") Long id) throws IOException, java.lang.Exception {
         Document document = documentService.getDocumentById(principal.getName(), id);
         if(document == null){
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         }
         else {
-            return new ResponseEntity<Document>(document, HttpStatus.OK);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.setContentLength(document.getDocument().length);
+            responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+            responseHeaders.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            return new ResponseEntity<byte[]>(document.getDocument(), responseHeaders, HttpStatus.OK);
         }
     }
 
