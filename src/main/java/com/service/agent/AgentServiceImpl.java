@@ -93,15 +93,105 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.save(agnt);
     }
 
-    public Boolean checkUnp(String username, String unp)
+    public Boolean checkUnp(String username, Agent agnt, String method)
     {
         Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
         for(Agent agent : userDAO.findByUsername(username).getAgents()){
-            if(agent.getUnp().equals(unp)){
-                return true;
+            if(method.equals("post")) {
+                if (agent.getUnp().equals(agnt.getUnp())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
             }
-            else{
-                iterator.next();
+            if(method.equals("update")) {
+                if(agent.getId() == agnt.getId()) {
+                    iterator.next();
+                }
+                else if(agent.getUnp().equals(agnt.getUnp())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkRs(String username, Agent agnt, String method)
+    {
+        Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
+        for(Agent agent : userDAO.findByUsername(username).getAgents()){
+            if(method.equals("post")) {
+                if (agent.getRs().equals(agnt.getRs())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(agent.getId() == agnt.getId()) {
+                    iterator.next();
+                }
+                else if(agent.getRs().equals(agnt.getRs())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkKs(String username, Agent agnt, String method)
+    {
+        Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
+        for(Agent agent : userDAO.findByUsername(username).getAgents()){
+            if(method.equals("post")) {
+                if (agent.getKs().equals(agnt.getKs())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(agent.getId() == agnt.getId()) {
+                    iterator.next();
+                }
+                else if(agent.getKs().equals(agnt.getKs())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkBik(String username, Agent agnt, String method)
+    {
+        Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
+        for(Agent agent : userDAO.findByUsername(username).getAgents()){
+            if(method.equals("post")) {
+                if (agent.getBik().equals(agnt.getBik())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(agent.getId() == agnt.getId()) {
+                    iterator.next();
+                }
+                else if(agent.getBik().equals(agnt.getBik())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
             }
         }
         return false;

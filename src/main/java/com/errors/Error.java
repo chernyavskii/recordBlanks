@@ -42,10 +42,10 @@ public class Error
     public static final String RS_KS_LENGTH_STATUS = "400 bad request";
 
     public static final String PHONE_INCORRECT_MESSAGE = "phone is incorrect, example: +375 29 XXX XX XX";
-    public static final String PHONE_INCORRECT_STATUS = "403 forbidden";
+    public static final String PHONE_INCORRECT_STATUS = "400 bad request";
 
     public static final String FIO_INCORRECT_MESSAGE = "a field is incorrect";
-    public static final String FIO_INCORRECT_STATUS = "403 forbidden";
+    public static final String FIO_INCORRECT_STATUS = "400 bad request";
 
     public Error(){}
 

@@ -49,8 +49,32 @@ public class AgentValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"phone",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
 
         if(method.equals("post")) {
-            if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent.getUnp()).booleanValue()) {
+            if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "post").booleanValue()) {
                 errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkRs(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "post").booleanValue()) {
+                errors.rejectValue("rs", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkKs(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "post").booleanValue()) {
+                errors.rejectValue("ks", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkBik(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "post").booleanValue()) {
+                errors.rejectValue("bik", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+        }
+
+        if(method.equals("update")) {
+            if(agentService.checkUnp(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "update").booleanValue()) {
+                errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkRs(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "update").booleanValue()) {
+                errors.rejectValue("rs", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkKs(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "update").booleanValue()) {
+                errors.rejectValue("ks", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
+            if(agentService.checkBik(SecurityContextHolder.getContext().getAuthentication().getName(), agent, "update").booleanValue()) {
+                errors.rejectValue("bik", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
             }
         }
 

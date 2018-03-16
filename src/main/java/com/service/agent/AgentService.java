@@ -9,6 +9,9 @@ public interface AgentService {
     Agent addAgent(String username, Agent agent);
     Agent deleteAgent(String username, Long id);
     Agent updateAgent(String username, Long id, Agent agent);
-    Boolean checkUnp(String username, String unp);
+    Boolean checkUnp(String username, Agent agent, String method);
+    Boolean checkRs(String username, Agent agent, String method);
+    Boolean checkKs(String username, Agent agent, String method);
+    Boolean checkBik(String username, Agent agent, String method);
 }
 

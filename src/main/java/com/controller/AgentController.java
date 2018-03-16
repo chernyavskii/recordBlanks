@@ -15,10 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.Set;
-
 
 @Controller
 @CrossOrigin
@@ -38,8 +36,7 @@ public class AgentController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of agents", response = Agent.class, responseContainer = "Set"),
             @ApiResponse(code = 404, message = "List of agents are empty", response = Error.class)})
-    public @ResponseBody
-    ResponseEntity<?> getAgentsInJSON(Principal principal) {
+    public @ResponseBody ResponseEntity<?> getAgentsInJSON(Principal principal) {
         Error error;
         Set<Agent> agentList = agentService.getAllAgents(principal.getName());
         if (agentList.size() == 0) {
@@ -84,20 +81,20 @@ public class AgentController {
         if (bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
                 case Error.FIO_INCORRECT_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.UNP_BIK_LENGTH_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.RS_KS_LENGTH_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.PHONE_INCORRECT_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.DUPLICATED_ENTITY_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.EMPTY_FIELD_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
