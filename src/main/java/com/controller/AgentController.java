@@ -79,15 +79,25 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> addAgentInJSON(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
+        agentValidator.setMethod("post");
         agentValidator.validate(agent, bindingResult);
         if (bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
-                case Error.DUPLICATED_ENTITY_MESSAGE:
+                case Error.FIO_INCORRECT_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.UNP_BIK_LENGTH_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.RS_KS_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PHONE_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.DUPLICATED_ENTITY_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
                 case Error.EMPTY_FIELD_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
@@ -112,9 +122,13 @@ public class AgentController {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
+            agentValidator.setMethod("update");
             agentValidator.validate(agent, bindingResult);
             if(bindingResult.hasErrors()) {
                 switch (bindingResult.getFieldError().getDefaultMessage()) {
+                    case Error.FIO_INCORRECT_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.UNP_BIK_LENGTH_MESSAGE:
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);

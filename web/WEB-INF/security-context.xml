@@ -8,25 +8,13 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http > <!--ОКНО БРАУЗЕРА ЛОГИНА НЕ ВЫСКАКИВАЕТ ЕСЛИ :  use-expressions="true"-->
-        <intercept-url pattern="/agents/" access="isAuthenticated()"/>
-        <intercept-url pattern="/documents/" access="isAuthenticated()"/>
-        <intercept-url pattern="/users/" access="isAuthenticated()"/>
-        <intercept-url pattern="/main" access="isAuthenticated()"/>
-
-<!--
-        <logout  delete-cookies = "JSESSIONID" />
--->
-
+        <intercept-url pattern="/agents/" access="isAuthenticated()" method="GET"/>
+        <intercept-url pattern="/documents/" access="isAuthenticated()" method="GET"/>
+        <intercept-url pattern="/users/" access="isAuthenticated()" method="GET"/>
+        <intercept-url pattern="/main" access="isAuthenticated()" method="GET"/>
 
         <http-basic />
         <csrf disabled="true"/>
-
-        <form-login />
-  <!--      <form-login login-page="/login" default-target-url="/" authentication-failure-url="/login?error"
-                    username-parameter="username" password-parameter="password"/>-->
-<!--
-        <form-login login-page="/login" default-target-url="/" username-parameter="username" password-parameter="password"/>
--->
     </http>
 
     <authentication-manager alias="authenticationManager">
