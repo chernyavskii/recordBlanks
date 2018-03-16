@@ -62,7 +62,6 @@ public class AgentController {
         } else {
             return new ResponseEntity<Agent>(agent, HttpStatus.OK);
         }
-
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -168,5 +167,4 @@ public class AgentController {
             return new ResponseEntity<Object>(agentService.deleteAgent(principal.getName(), id), HttpStatus.OK);
         }
     }
-
 }

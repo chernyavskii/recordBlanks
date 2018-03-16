@@ -44,6 +44,7 @@ public class DocumentController
             return new ResponseEntity<Set<Document>>(documentList, HttpStatus.OK);
         }
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     //@ApiOperation(value = "Get the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {

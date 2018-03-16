@@ -6,6 +6,7 @@ public class Error
     private String status;
     private int code;
 
+    /*FOR ALL*/
     public static final String ENTITY_NOT_FOUND_MESSAGE = "entity not found";
     public static final String ENTITY_NOT_FOUND_STATUS = "404 not found";
 
@@ -17,6 +18,9 @@ public class Error
 
     public static final String EMPTY_FIELD_MESSAGE = "a field is empty";
     public static final String EMPTY_FIELD_STATUS = "400 bad request";
+
+    public static final String FIO_INCORRECT_MESSAGE = "a field is incorrect";
+    public static final String FIO_INCORRECT_STATUS = "400 bad request";
 
     /*USER SERVICE*/
     public static final String DUPLICATED_ENTITY_MESSAGE = "already exist in system";
@@ -43,9 +47,6 @@ public class Error
 
     public static final String PHONE_INCORRECT_MESSAGE = "phone is incorrect, example: +375 29 XXX XX XX";
     public static final String PHONE_INCORRECT_STATUS = "400 bad request";
-
-    public static final String FIO_INCORRECT_MESSAGE = "a field is incorrect";
-    public static final String FIO_INCORRECT_STATUS = "400 bad request";
 
     public Error(){}
 
