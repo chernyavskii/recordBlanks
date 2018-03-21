@@ -48,6 +48,10 @@ public class Error
     public static final String PHONE_INCORRECT_MESSAGE = "phone is incorrect, example: +375 29 XXX XX XX";
     public static final String PHONE_INCORRECT_STATUS = "400 bad request";
 
+    /*DOCUMENT SERVICE*/
+    public static final String FIELD_INCORRECT_MESSAGE = "a field is incorrect";
+    public static final String FIELD_INCORRECT_STATUS = "400 bad request";
+
     public Error(){}
 
     public Error(String message, int code)

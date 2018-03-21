@@ -38,8 +38,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "List of users are empty", response = Error.class)})
-    public @ResponseBody
-    ResponseEntity<?> findAll() {
+    public @ResponseBody ResponseEntity<?> findAll() {
         List<User> userList = userService.findAll();
         if (userList.size() == 0) {
             Error error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -55,8 +54,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Return User", response = User.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
-    public @ResponseBody
-    ResponseEntity<?> findById(@PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> findById(@PathVariable("id") Long id) {
         User user = userService.findById(id);
         if (user == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -72,8 +70,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "Deleted successfully", response = Object.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
-    public @ResponseBody
-    ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         if (userService.findById(id) == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
@@ -92,8 +89,8 @@ public class UserController {
             @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
-    public @ResponseBody
-    ResponseEntity<?> updateById(@PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> updateById(@PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult) {
+        userValidator.setMethod("update");
         userValidator.validate(user, bindingResult);
         if (userService.findById(id) == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -112,6 +109,18 @@ public class UserController {
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.USERNAME_LENGTH_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.FIO_INCORRECT_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.UNP_BIK_LENGTH_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.RS_KS_LENGTH_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.PHONE_INCORRECT_MESSAGE:
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     default:

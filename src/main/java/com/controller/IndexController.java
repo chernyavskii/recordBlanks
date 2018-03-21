@@ -48,6 +48,7 @@ public class IndexController {
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult) {
+        userValidator.setMethod("post");
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             Error error;
@@ -64,6 +65,18 @@ public class IndexController {
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.USERNAME_LENGTH_MESSAGE :
                     error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIO_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.UNP_BIK_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.RS_KS_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PHONE_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 default :
                     error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -84,13 +97,10 @@ public class IndexController {
             @ApiResponse(code = 200, message = "Return a User",response = User.class),
             @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
-            securityService.autoLogin(user.getUsername(), user.getPassword());
+        securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
             return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
-
-/*
-            return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
-*/
+            //return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
         }
         else {
             Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());
@@ -104,11 +114,11 @@ public class IndexController {
             @ApiResponse(code = 200, message = "Logout user", response = User.class),
             @ApiResponse(code = 404, message = "user do not logged-in", response = Error.class)})
     public @ResponseBody ResponseEntity<?> logout (HttpServletRequest request, HttpServletResponse response) {
-        if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
+        if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != "") {
             new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        else{
+        else {
             Error error = new Error(Error.USER_DO_NOT_LOGGEDIN_MESSAGE, Error.USER_DO_NOT_LOGGEDIN_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
         }

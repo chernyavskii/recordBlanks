@@ -2,6 +2,13 @@ package com.validator;
 
 import com.errors.Error;
 import com.model.Product;
+import com.model.RequestWrapper;
+import com.model.Work;
+import com.service.agent.AgentService;
+import com.service.driver.DriverService;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -11,30 +18,93 @@ import java.util.List;
 
 @Component
 public class DocumentValidator implements Validator {
+
+    @Autowired
+    private AgentService agentService;
+
+    @Autowired
+    private DriverService driverService;
+
+    private String type;
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public boolean supports(Class<?> aClass) {
-        return Product.class.equals(aClass);
+        return RequestWrapper.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        List<Product> productList = (List<Product>)o;
-
-        for(Product product : productList) {
-            if(product.getName().equals("")){
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        RequestWrapper requestWrapper = (RequestWrapper) o;
+        Long agent_id = requestWrapper.getAgent_id();
+        Long driver_id = requestWrapper.getDriver_id();
+        List<Product> productList = requestWrapper.getProducts();
+        List<Work> workList = requestWrapper.getWorks();
+        if(type.equals("tn")) {
+            if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {
+                errors.rejectValue("agent_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
             }
-            if(product.getPrice() == 0){
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+            for (int i = 0; i < productList.size(); i++) {
+                if (productList.get(i).getName().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].name", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getMeasure().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].measure", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getNumber() == 0) {
+                    errors.rejectValue("products[" + i + "].number", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+                if (productList.get(i).getPrice() == 0) {
+                    errors.rejectValue("products[" + i + "].price", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
             }
-            if(product.getNumber() == 0){
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        }
+        if(type.equals("ttn")) {
+            if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {
+                errors.rejectValue("agent_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
             }
-            if(product.getMeasure().equals("")){
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "measure", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+            if(driverService.getDriverById(SecurityContextHolder.getContext().getAuthentication().getName(), driver_id) == null) {
+                errors.rejectValue("driver_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
             }
-            if(product.getNote().equals("")){
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "note", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+            for (int i = 0; i < productList.size(); i++) {
+                if (productList.get(i).getName().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].name", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getMeasure().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].measure", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getNumber() == 0) {
+                    errors.rejectValue("products[" + i + "].number", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+                if (productList.get(i).getPrice() == 0) {
+                    errors.rejectValue("products[" + i + "].price", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+                if (productList.get(i).getPackageNumber() == 0) {
+                    errors.rejectValue("products[" + i + "].packageNumber", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+                if (productList.get(i).getWeight() == 0) {
+                    errors.rejectValue("products[" + i + "].weight", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+            }
+        }
+        if(type.equals("aspr")) {
+            if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {
+                errors.rejectValue("agent_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
+            }
+            for (int i = 0; i < workList.size(); i++) {
+                if (workList.get(i).getName().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "works[" + i + "].name", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (workList.get(i).getPrice() == 0) {
+                    errors.rejectValue("works[" + i + "].price", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
             }
         }
     }

@@ -97,4 +97,108 @@ public class UserServiceImpl implements UserService {
         findUser.setPassword(decodedPassword);*/
         return userDAO.findByUsername(username);
     }
+
+    public Boolean checkUnp(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getUnp().equals(usr.getUnp())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getUnp().equals(usr.getUnp())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkRs(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getRs().equals(usr.getRs())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getRs().equals(usr.getRs())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkKs(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getKs().equals(usr.getKs())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getKs().equals(usr.getKs())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean checkBik(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getBik().equals(usr.getBik())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getBik().equals(usr.getBik())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
+    }
 }

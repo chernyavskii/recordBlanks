@@ -73,11 +73,18 @@ public class DocumentController
             @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> writeToFile(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException {
-        documentValidator.validate(requestWrapper.getProducts(), bindingResult);
+        documentValidator.setType("tn");
+        documentValidator.validate(requestWrapper, bindingResult);
         Error error;
         if (bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.ENTITY_NOT_FOUND_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
                 case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIELD_INCORRECT_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 default:
@@ -106,14 +113,56 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/ttn", method = RequestMethod.POST)
-    public @ResponseBody Document addDocumentTTN(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException
+    public @ResponseBody ResponseEntity<?> addDocumentTTN(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
-        return documentService.addDocumentTTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts());
+        documentValidator.setType("ttn");
+        documentValidator.validate(requestWrapper, bindingResult);
+        Error error;
+        if (bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.ENTITY_NOT_FOUND_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIELD_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<>(documentService.addDocumentTTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts()), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/aspr", method = RequestMethod.POST)
-    public @ResponseBody Document addDocumentASPR(Principal principal, @RequestBody RequestWrapper requestWrapper) throws IOException
+    public @ResponseBody ResponseEntity<?> addDocumentASPR(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
-        return documentService.addDocumentASPR(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getWorks());
+        documentValidator.setType("aspr");
+        documentValidator.validate(requestWrapper, bindingResult);
+        Error error;
+        if (bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.ENTITY_NOT_FOUND_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIELD_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<>(documentService.addDocumentASPR(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getWorks()), HttpStatus.OK);
+        }
     }
 }

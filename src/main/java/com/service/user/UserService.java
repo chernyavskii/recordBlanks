@@ -11,5 +11,9 @@ public interface UserService {
     Object deleteById(Long id);
     User updateById(User user, Long id);
     User findByUsername(String username);
+    Boolean checkUnp(User usr, String method);
+    Boolean checkRs(User usr, String method);
+    Boolean checkKs(User usr, String method);
+    Boolean checkBik(User usr, String method);
 }
 
