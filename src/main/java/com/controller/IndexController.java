@@ -47,7 +47,7 @@ public class IndexController {
             @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult)  {
         userValidator.setMethod("post");
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {

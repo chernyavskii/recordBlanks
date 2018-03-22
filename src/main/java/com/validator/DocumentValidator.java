@@ -107,5 +107,24 @@ public class DocumentValidator implements Validator {
                 }
             }
         }
+        if(type.equals("sf")) {
+            if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {
+                errors.rejectValue("agent_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
+            }
+            for (int i = 0; i < productList.size(); i++) {
+                if (productList.get(i).getName().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].name", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getMeasure().length() == 0) {
+                    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "products[" + i + "].measure", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+                }
+                if (productList.get(i).getNumber() == 0) {
+                    errors.rejectValue("products[" + i + "].number", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+                if (productList.get(i).getPrice() == 0) {
+                    errors.rejectValue("products[" + i + "].price", Error.FIELD_INCORRECT_STATUS, Error.FIELD_INCORRECT_MESSAGE);
+                }
+            }
+        }
     }
 }

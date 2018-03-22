@@ -165,4 +165,31 @@ public class DocumentController
             return new ResponseEntity<>(documentService.addDocumentASPR(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getWorks()), HttpStatus.OK);
         }
     }
+
+    @RequestMapping(value = "/sf", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addDocumentSF(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
+    {
+        documentValidator.setType("sf");
+        documentValidator.validate(requestWrapper, bindingResult);
+        Error error;
+        if (bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.ENTITY_NOT_FOUND_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIELD_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<>(documentService.addDocumentSF(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
+        }
+    }
 }
