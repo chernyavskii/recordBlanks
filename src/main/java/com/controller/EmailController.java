@@ -16,8 +16,6 @@ public class EmailController {
 
     @RequestMapping(value = "/email/send", method = RequestMethod.POST)
     public @ResponseBody Object email() {
-        System.setProperty( "http.proxyHost", "192.168.71.2" );
-        System.setProperty( "http.proxyPort", "3128" );
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("sanya250497@gmail.com");
         email.setTo("sanya250497@gmail.com");
