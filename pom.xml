@@ -211,6 +211,23 @@
             <version>3.11</version>
         </dependency>
 
+        <!-- Spring MVC Mail Related Dependency -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring-framework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
+
         <!-- SWAGGER UI -->
         <!--<dependency>
             <groupId>io.springfox</groupId>
