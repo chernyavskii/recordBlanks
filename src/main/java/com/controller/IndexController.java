@@ -90,6 +90,14 @@ public class IndexController {
         }
     }
 
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> testLogin(Principal principal){
+        User user = userService.findByUsername(principal.getName());
+        securityService.autoLogin(user.getUsername(), user.getPassword());
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @CrossOrigin
     @ApiOperation(value = "User login ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)

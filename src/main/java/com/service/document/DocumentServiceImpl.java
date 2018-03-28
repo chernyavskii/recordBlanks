@@ -37,7 +37,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     public Document getDocumentById(String username, Long id) throws IOException
     {
-        Document document = new Document();
+
+       /* Document document = new Document();
         for(Document doc : userDAO.findByUsername(username).getDocuments())
         {
             if(id == doc.getId())
@@ -46,8 +47,8 @@ public class DocumentServiceImpl implements DocumentService {
                 //Files.write(Paths.get("d:/files/" + doc.getName()), doc.getDocument());
                 return document;
             }
-        }
-        return  null;
+        }*/
+        return  documentDAO.findOne(id);
     }
 
     public Document deleteDocument(String username, Long id)

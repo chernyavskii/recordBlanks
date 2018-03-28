@@ -59,7 +59,9 @@ public class User {
 
     @Basic
     @Column(name = "password")
+/*
     @JsonIgnore
+*/
     public String getPassword() {
         return password;
     }
