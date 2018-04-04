@@ -499,7 +499,7 @@ public class DocumentServiceImpl implements DocumentService {
         return documentDAO.save(doc);
     }
 
-    public Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException
+    public Document addDocumentTTN(String username, String documentName, Long agent_id, Long driver_id, List<Product> products) throws IOException
     {
         Document doc = new Document();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
@@ -512,13 +512,14 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        doc.setName(documentName);
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }
 
-    public Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException
+    public Document addDocumentASPR(String username, String documentName, Long agent_id, List<Work> works) throws IOException
     {
         Document doc = new Document();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
@@ -531,13 +532,14 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        doc.setName(documentName);
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
     }
 
-    public Document addDocumentSF(String username, Long agent_id, List<Product> products) throws IOException
+    public Document addDocumentSF(String username, String documentName, Long agent_id, List<Product> products) throws IOException
     {
         Document doc = new Document();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
@@ -550,7 +552,8 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        doc.setName(documentName);
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);

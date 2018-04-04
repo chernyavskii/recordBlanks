@@ -151,7 +151,7 @@ public class DocumentController
             }
         }
         else {
-            return new ResponseEntity<>(documentService.addDocumentTTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts()), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.addDocumentTTN(principal.getName(), requestWrapper.getDocumentName(), requestWrapper.getAgent_id(), requestWrapper.getDriver_id(), requestWrapper.getProducts()), HttpStatus.OK);
         }
     }
 
@@ -178,7 +178,7 @@ public class DocumentController
             }
         }
         else {
-            return new ResponseEntity<>(documentService.addDocumentASPR(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getWorks()), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.addDocumentASPR(principal.getName(), requestWrapper.getDocumentName(), requestWrapper.getAgent_id(), requestWrapper.getWorks()), HttpStatus.OK);
         }
     }
 
@@ -205,7 +205,7 @@ public class DocumentController
             }
         }
         else {
-            return new ResponseEntity<>(documentService.addDocumentSF(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.addDocumentSF(principal.getName(), requestWrapper.getDocumentName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
         }
     }
 }

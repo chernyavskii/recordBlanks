@@ -49,7 +49,7 @@ public class DocumentValidator implements Validator {
         List<Product> productList = requestWrapper.getProducts();
         List<Work> workList = requestWrapper.getWorks();
         if(documentName.equals("")) {
-            errors.rejectValue("documentName", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
+            errors.rejectValue("documentName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         }
         if(type.equals("tn")) {
             if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {

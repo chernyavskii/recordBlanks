@@ -14,9 +14,9 @@ public interface DocumentService {
     Set<Document> getAllDocuments(String username);
     Document getDocumentById(String username, Long id) throws IOException;
     Document addDocumentTN(String username, String documentName, Long id, List<Product> products) throws IOException;
-    Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException;
-    Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException;
-    Document addDocumentSF(String username, Long agent_id, List<Product> products) throws IOException;
+    Document addDocumentTTN(String username, String documentName, Long agent_id, Long driver_id, List<Product> products) throws IOException;
+    Document addDocumentASPR(String username, String documentName, Long agent_id, List<Work> works) throws IOException;
+    Document addDocumentSF(String username, String documentName, Long agent_id, List<Product> products) throws IOException;
     Document deleteDocument(String username, Long id);
     File createFileTN();
     File createFileTTN();
