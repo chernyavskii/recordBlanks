@@ -8,9 +8,10 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http > <!--ОКНО БРАУЗЕРА ЛОГИНА НЕ ВЫСКАКИВАЕТ ЕСЛИ :  use-expressions="true"-->
-        <intercept-url pattern="/agents/" access="isAuthenticated()" method="GET"/>
-        <intercept-url pattern="/documents/" access="isAuthenticated()" method="GET"/>
-        <intercept-url pattern="/users/" access="isAuthenticated()" method="GET"/>
+        <intercept-url pattern="/agents/"/>
+        <intercept-url pattern="/documents/"/>
+        <intercept-url pattern="/drivers/"/>
+        <intercept-url pattern="/users/"/>
         <intercept-url pattern="/main" access="isAuthenticated()" method="GET"/>
 
         <http-basic />

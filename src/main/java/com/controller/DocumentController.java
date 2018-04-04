@@ -34,8 +34,12 @@ public class DocumentController
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success response",response = Document.class, responseContainer = "Set"),
             @ApiResponse(code = 404, message = "List of documents are empty", response = Error.class)})
-    public @ResponseBody ResponseEntity<?> getDocumentsInJSON(Principal principal)
+    public @ResponseBody ResponseEntity<?> getAllDocuments(Principal principal)
     {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Set<Document> documentList = documentService.getAllDocuments(principal.getName());
         if (documentList.size() == 0) {
             Error error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -51,7 +55,11 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Return Document", response = Document.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public ResponseEntity<?> getDocumentByIdInJSON(Principal principal, @PathVariable("id") Long id) throws IOException, java.lang.Exception {
+    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id) throws IOException, java.lang.Exception {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Document document = documentService.getDocumentById(principal.getName(), id);
         if(document == null){
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -72,7 +80,11 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Return Document",response = Document.class),
             @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> writeToFile(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException {
+    public @ResponseBody ResponseEntity<?> addDocumentTN(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         documentValidator.setType("tn");
         documentValidator.validate(requestWrapper, bindingResult);
         Error error;
@@ -93,7 +105,7 @@ public class DocumentController
             }
         }
         else {
-            return new ResponseEntity<>(documentService.addDocumentTN(principal.getName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
+            return new ResponseEntity<>(documentService.addDocumentTN(principal.getName(), requestWrapper.getDocumentName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
         }
     }
 
@@ -103,7 +115,11 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Deleted successfully",response = Document.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class),
     })
-    public @ResponseBody ResponseEntity<?> deleteDocumentInJSON(Principal principal, @PathVariable("id") Long id) throws java.io.IOException {
+    public @ResponseBody ResponseEntity<?> deleteDocument(Principal principal, @PathVariable("id") Long id) throws java.io.IOException {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         if (documentService.getDocumentById(principal.getName(),id) == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);

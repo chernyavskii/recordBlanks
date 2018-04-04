@@ -26,23 +26,18 @@ public class AgentServiceImpl implements AgentService {
         return userDAO.findByUsername(username).getAgents();
     }
 
-    public Agent getAgentById(String username, Long id)
-    {
-        Agent agent = new Agent();
+    public Agent getAgentById(String username, Long id) {
         for(Agent agn : userDAO.findByUsername(username).getAgents())
         {
             if(id == agn.getId())
             {
-                agent = agn;
-                return  agent;
+                return agentDAO.findOne(id);
             }
         }
         return  null;
-
     }
 
-    public Agent addAgent(String username, Agent agent)
-    {
+    public Agent addAgent(String username, Agent agent) {
         Agent agnt = new Agent();
         agnt.setFirstName(agent.getFirstName());
         agnt.setMiddleName(agent.getMiddleName());
@@ -60,8 +55,7 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.save(agnt);
     }
 
-    public Agent deleteAgent(String username, Long id)
-    {
+    public Agent deleteAgent(String username, Long id) {
         Agent agent = new Agent();
         for(Agent agn : userDAO.findByUsername(username).getAgents())
         {
@@ -75,8 +69,7 @@ public class AgentServiceImpl implements AgentService {
         return  null;
     }
 
-    public Agent updateAgent(String username, Long id, Agent agent)
-    {
+    public Agent updateAgent(String username, Long id, Agent agent) {
         Agent agnt = agentDAO.findOne(id);
         agnt.setFirstName(agent.getFirstName());
         agnt.setMiddleName(agent.getMiddleName());
@@ -93,8 +86,7 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.save(agnt);
     }
 
-    public Boolean checkUnp(String username, Agent agnt, String method)
-    {
+    public Boolean checkUnp(String username, Agent agnt, String method) {
         Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
         for(Agent agent : userDAO.findByUsername(username).getAgents()){
             if(method.equals("post")) {
@@ -119,8 +111,7 @@ public class AgentServiceImpl implements AgentService {
         return false;
     }
 
-    public Boolean checkRs(String username, Agent agnt, String method)
-    {
+    public Boolean checkRs(String username, Agent agnt, String method) {
         Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
         for(Agent agent : userDAO.findByUsername(username).getAgents()){
             if(method.equals("post")) {
@@ -145,8 +136,7 @@ public class AgentServiceImpl implements AgentService {
         return false;
     }
 
-    public Boolean checkKs(String username, Agent agnt, String method)
-    {
+    public Boolean checkKs(String username, Agent agnt, String method) {
         Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
         for(Agent agent : userDAO.findByUsername(username).getAgents()){
             if(method.equals("post")) {
@@ -171,8 +161,7 @@ public class AgentServiceImpl implements AgentService {
         return false;
     }
 
-    public Boolean checkBik(String username, Agent agnt, String method)
-    {
+    public Boolean checkBik(String username, Agent agnt, String method) {
         Iterator<Agent> iterator = userDAO.findByUsername(username).getAgents().iterator();
         for(Agent agent : userDAO.findByUsername(username).getAgents()){
             if(method.equals("post")) {

@@ -1,6 +1,7 @@
 package com.validator;
 
 import com.errors.Error;
+import com.model.RequestWrapper;
 import com.model.User;
 import com.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,17 @@ public class UserValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return User.class.equals(aClass);
+        return RequestWrapper.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        User user = (User) o;
+        RequestWrapper requestWrapper = (RequestWrapper) o;
+        User user = requestWrapper.getUser();
+        Long user_id = requestWrapper.getUser_id();
+        user.setId(user_id);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
@@ -50,6 +53,13 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"phone", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
 
         if(method.equals("post")) {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+            if(user.getPassword().length() < 8){
+                errors.rejectValue("password", Error.PASSWORD_LENGTH_STATUS, Error.PASSWORD_LENGTH_MESSAGE);
+            }
+            if(userService.checkUsername(user, "post").booleanValue()) {
+                errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
             if(userService.checkUnp(user, "post").booleanValue()) {
                 errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
             }
@@ -65,6 +75,9 @@ public class UserValidator implements Validator {
         }
 
         if(method.equals("update")) {
+            if(userService.checkUsername(user, "update").booleanValue()) {
+                errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
             if(userService.checkUnp(user, "update").booleanValue()) {
                 errors.rejectValue("unp", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
             }
@@ -79,12 +92,6 @@ public class UserValidator implements Validator {
             }
         }
 
-        if(userService.findByUsername(user.getUsername()) != null){
-            errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS,Error.DUPLICATED_ENTITY_MESSAGE);
-        }
-        if(user.getPassword().length() < 8){
-            errors.rejectValue("password", Error.PASSWORD_LENGTH_STATUS, Error.PASSWORD_LENGTH_MESSAGE);
-        }
         if(user.getUsername().length() < 5){
             errors.rejectValue("username", Error.USERNAME_LENGTH_STATUS, Error.USERNAME_LENGTH_MESSAGE);
         }

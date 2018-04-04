@@ -43,9 +43,14 @@
         <property name="host" value="smtp.gmail.com" />
         <property name="port" value="465" />
         <property name="username" value="sanya250497@gmail.com" />
-        <property name="password" value="" />
+        <property name="password" value="sanya060566" />
         <property name="javaMailProperties">
             <props>
+                <!--<prop key="java.net.useSystemProxies">true</prop>
+                <prop key="http.proxyHost">192.168.71.2</prop>
+                <prop key="http.proxyPort">3128</prop>
+                <prop key="http.proxyUser">a.shatilo</prop>
+                <prop key="http.proxyPassword">JK51%23gfD7Bw</prop>-->
                 <prop key="mail.smtp.starttls.enable">true</prop>
                 <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
                 <prop key="mail.transport.protocol">smtp</prop>

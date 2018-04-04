@@ -1,5 +1,7 @@
 package com.controller;
 
+import com.model.RequestWrapper;
+import com.model.Role;
 import com.model.User;
 import com.service.user.UserService;
 import com.errors.Error;
@@ -12,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @CrossOrigin
@@ -31,6 +35,9 @@ public class UserController {
     @Autowired
     UserValidator userValidator;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     ////////////////////////// CRoSS ORIGIN ИЗМЕНИЛ
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @CrossOrigin(origins = "*")
@@ -38,7 +45,17 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "List"),
             @ApiResponse(code = 404, message = "List of users are empty", response = Error.class)})
-    public @ResponseBody ResponseEntity<?> findAll() {
+    public @ResponseBody ResponseEntity<?> getAllUsers(Principal principal) {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!role.getName().equals("ROLE_ADMIN")) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+        }
         List<User> userList = userService.findAll();
         if (userList.size() == 0) {
             Error error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -54,7 +71,17 @@ public class UserController {
             @ApiResponse(code = 200, message = "Return User", response = User.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> findById(@PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> getUserById(Principal principal, @PathVariable("id") Long id) {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!role.getName().equals("ROLE_ADMIN")) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+        }
         User user = userService.findById(id);
         if (user == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -70,7 +97,17 @@ public class UserController {
             @ApiResponse(code = 200, message = "Deleted successfully", response = Object.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> deleteUserById(Principal principal, @PathVariable("id") Long id) {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!role.getName().equals("ROLE_ADMIN")) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+        }
         if (userService.findById(id) == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
@@ -89,9 +126,22 @@ public class UserController {
             @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> updateById(@PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> updateUserById(Principal principal, @PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult) {
+        RequestWrapper requestWrapper = new RequestWrapper();
+        requestWrapper.setUser_id(id);
+        requestWrapper.setUser(user);
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && id == userService.findByUsername(principal.getName()).getId()))) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+        }
         userValidator.setMethod("update");
-        userValidator.validate(user, bindingResult);
+        userValidator.validate(requestWrapper, bindingResult);
         if (userService.findById(id) == null) {
             Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
@@ -131,6 +181,24 @@ public class UserController {
             return new ResponseEntity<User>(userService.updateById(user, id), HttpStatus.OK);
         }
     }
+
+    @RequestMapping(value = "/password", method = RequestMethod.PUT)
+    public @ResponseBody ResponseEntity<?> updatePassword(Principal principal, @RequestBody Map<String, String> passwords) {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        if(!bCryptPasswordEncoder.matches(passwords.get("oldPassword"), userService.findByUsername(principal.getName()).getPassword())) {
+            Error error = new Error(Error.WRONG_OLDPASSWORD_MESSAGE, Error.WRONG_OLDPASSWORD_STATUS, HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+        }
+        if(passwords.get("newPassword").length() < 8){
+            Error error = new Error(" 'newPassword'" + ": " + Error.PASSWORD_LENGTH_MESSAGE, Error.PASSWORD_LENGTH_STATUS, HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<User>(userService.updatePassword(principal.getName(), passwords.get("newPassword")), HttpStatus.OK);
+    }
+
   /*  @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> currentUserName(@PathVariable String username) {

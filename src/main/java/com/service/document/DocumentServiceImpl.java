@@ -30,29 +30,22 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private UserDAO userDAO;
 
-    public Set<Document> getAllDocuments(String username)
-    {
+    public Set<Document> getAllDocuments(String username) {
         return userDAO.findByUsername(username).getDocuments();
     }
 
-    public Document getDocumentById(String username, Long id) throws IOException
-    {
-
-       /* Document document = new Document();
+    public Document getDocumentById(String username, Long id) throws IOException {
         for(Document doc : userDAO.findByUsername(username).getDocuments())
         {
             if(id == doc.getId())
             {
-                document = doc;
-                //Files.write(Paths.get("d:/files/" + doc.getName()), doc.getDocument());
-                return document;
+                return documentDAO.findOne(id);
             }
-        }*/
-        return  documentDAO.findOne(id);
+        }
+        return null;
     }
 
-    public Document deleteDocument(String username, Long id)
-    {
+    public Document deleteDocument(String username, Long id) {
         Document document = new Document();
         for(Document doc : userDAO.findByUsername(username).getDocuments())
         {
@@ -486,7 +479,7 @@ public class DocumentServiceImpl implements DocumentService {
         return file;
     }
 
-    public Document addDocumentTN(String username, Long id, List<Product> products) throws IOException
+    public Document addDocumentTN(String username, String documentName, Long id, List<Product> products) throws IOException
     {
         Document doc = new Document();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss");
@@ -499,7 +492,8 @@ public class DocumentServiceImpl implements DocumentService {
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
         doc.setDocument(document);
-        doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
+        doc.setName(documentName);
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);

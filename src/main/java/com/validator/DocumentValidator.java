@@ -43,13 +43,17 @@ public class DocumentValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         RequestWrapper requestWrapper = (RequestWrapper) o;
+        String documentName = requestWrapper.getDocumentName();
         Long agent_id = requestWrapper.getAgent_id();
         Long driver_id = requestWrapper.getDriver_id();
         List<Product> productList = requestWrapper.getProducts();
         List<Work> workList = requestWrapper.getWorks();
+        if(documentName.equals("")) {
+            errors.rejectValue("documentName", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
+        }
         if(type.equals("tn")) {
             if(agentService.getAgentById(SecurityContextHolder.getContext().getAuthentication().getName(), agent_id) == null) {
-                errors.rejectValue("agent_id", Error.ENTITY_NOT_FOUND_STATUS, Error.ENTITY_NOT_FOUND_MESSAGE);
+                errors.rejectValue("agent_id", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
             }
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getName().length() == 0) {

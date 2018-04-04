@@ -38,6 +38,10 @@ public class AgentController {
             @ApiResponse(code = 404, message = "List of agents are empty", response = Error.class)})
     public @ResponseBody ResponseEntity<?> getAgentsInJSON(Principal principal) {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Set<Agent> agentList = agentService.getAllAgents(principal.getName());
         if (agentList.size() == 0) {
             error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -55,6 +59,10 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> getAgentByIdInJSON(Principal principal, @PathVariable("id") Long id) {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Agent agent = agentService.getAgentById(principal.getName(), id);
         if (agent == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -75,6 +83,10 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> addAgentInJSON(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         agentValidator.setMethod("post");
         agentValidator.validate(agent, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -114,6 +126,10 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         if (agentService.getAgentById(principal.getName(), id) == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
@@ -160,6 +176,10 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> deleteAgentInJSON(Principal principal, @PathVariable("id") Long id) {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         if (agentService.getAgentById(principal.getName(), id) == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);

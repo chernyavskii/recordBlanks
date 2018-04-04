@@ -38,15 +38,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Transactional
+    //@Transactional
     public List<User> findAll() {
         return userDAO.findAll();
     }
 
-    @Transactional
+    //@Transactional
     public User save(User user) {
         Role role = new Role();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setConfirmPassword(bCryptPasswordEncoder.encode(user.getConfirmPassword()));
         userDAO.save(user);
         role.setName(ROLE_USER);
         role.setUser(user);
@@ -54,12 +55,12 @@ public class UserServiceImpl implements UserService {
        return user;
     }
 
-    @Override
+    //@Override
     public User findById(Long id) {
         return userDAO.findOne(id);
     }
 
-    @Override
+    //@Override
     public Object deleteById(Long id) {
         User user = userDAO.findOne(id);
         agentDAO.delete(user.getAgents());
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
         return "{\"success\":true}";
     }
 
-    @Override
+    //@Override
     public User updateById(User user, Long id) {
         User findUser = userDAO.findOne(id);
 /*
@@ -91,13 +92,45 @@ public class UserServiceImpl implements UserService {
         return userDAO.save(findUser);
     }
 
-    @Override
+    public User updatePassword(String username, String newPassword) {
+        User user = userDAO.findByUsername(username);
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        return userDAO.save(user);
+    }
+
+    //@Override
     public User findByUsername(String username) {
   /*      User findUser = userDAO.findByUsername(username);
         String decodedPassword = null;
         bCryptPasswordEncoder.(decodedPassword,findUser.getPassword());
         findUser.setPassword(decodedPassword);*/
         return userDAO.findByUsername(username);
+    }
+
+    public Boolean checkUsername(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getUsername().equals(usr.getUsername())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getUsername().equals(usr.getUsername())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
     }
 
     public Boolean checkUnp(User usr, String method)

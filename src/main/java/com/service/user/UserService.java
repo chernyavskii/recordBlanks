@@ -10,7 +10,9 @@ public interface UserService {
     User findById(Long id);
     Object deleteById(Long id);
     User updateById(User user, Long id);
+    User updatePassword(String username, String newPassword);
     User findByUsername(String username);
+    Boolean checkUsername(User usr, String method);
     Boolean checkUnp(User usr, String method);
     Boolean checkRs(User usr, String method);
     Boolean checkKs(User usr, String method);

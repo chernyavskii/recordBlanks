@@ -13,7 +13,7 @@ import java.util.Set;
 public interface DocumentService {
     Set<Document> getAllDocuments(String username);
     Document getDocumentById(String username, Long id) throws IOException;
-    Document addDocumentTN(String username, Long id, List<Product> products) throws IOException;
+    Document addDocumentTN(String username, String documentName, Long id, List<Product> products) throws IOException;
     Document addDocumentTTN(String username, Long agent_id, Long driver_id, List<Product> products) throws IOException;
     Document addDocumentASPR(String username, Long agent_id, List<Work> works) throws IOException;
     Document addDocumentSF(String username, Long agent_id, List<Product> products) throws IOException;
@@ -27,5 +27,8 @@ public interface DocumentService {
     XSSFWorkbook preparationFileASPR(File file, String username, Long agent_id, List<Work> works) throws IOException;
     HSSFWorkbook preparationFileSF(File file, String username, Long agent_id, List<Product> products) throws IOException;
     File writeToFileTN(File file, HSSFWorkbook workbook) throws IOException;
+    File writeToFileTTN(File file, HSSFWorkbook workbook) throws IOException;
+    File writeToFileASPR(File file, XSSFWorkbook workbook) throws IOException;
+    File writeToFileSF(File file, HSSFWorkbook workbook) throws IOException;
 }
 

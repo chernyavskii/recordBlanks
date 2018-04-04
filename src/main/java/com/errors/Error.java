@@ -29,6 +29,12 @@ public class Error
     public static final String PASSWORD_LENGTH_MESSAGE = "a field must be bellow 8 characters";
     public static final String PASSWORD_LENGTH_STATUS = "400 bad request";
 
+    public static final String PASSWORD_DO_NOT_MATCH_MESSAGE = "a field do not match with confirmPassword";
+    public static final String PASSWORD_DO_NOT_MATCH_STATUS = "400 bad request";
+
+    public static final String WRONG_OLDPASSWORD_MESSAGE = "wrong oldPassword";
+    public static final String WRONG_OLDPASSWORD_STATUS = "400 bad request";
+
     public static final String USERNAME_LENGTH_MESSAGE = "a field must be bellow 5 characters";
     public static final String USERNAME_LENGTH_STATUS = "400 bad request";
 
@@ -37,6 +43,12 @@ public class Error
 
     public static final String USER_DO_NOT_LOGGEDIN_MESSAGE = "user do not logged-in";
     public static final String USER_DO_NOT_LOGGEDIN_STATUS = "404 not found";
+
+    public static final String UNAUTHORIZED_MESSAGE = "user is not authorized";
+    public static final String UNAUTHORIZED_STATUS = "401 unauthorized";
+
+    public static final String NO_ACCESS_MESSAGE = "insufficient access rights";
+    public static final String NO_ACCESS_STATUS = "403 forbidden";
 
     /*AGENT SERVICE*/
     public static final String UNP_BIK_LENGTH_MESSAGE = "a field must be bellow 9 numbers";

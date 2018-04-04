@@ -63,6 +63,9 @@ public class IndexController {
                 case Error.PASSWORD_LENGTH_MESSAGE :
                     error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PASSWORD_DO_NOT_MATCH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.USERNAME_LENGTH_MESSAGE :
                     error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
@@ -107,8 +110,8 @@ public class IndexController {
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
-            return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
-            //return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
+            //return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
+            return new ResponseEntity<>(userService.findByUsername(user.getUsername()), HttpStatus.OK);
         }
         else {
             Error error = new Error(Error.LOGIN_INCORRECT_MESSAGE, Error.LOGIN_INCORRECT_STATUS, HttpStatus.FORBIDDEN.value());

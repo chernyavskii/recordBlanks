@@ -28,6 +28,10 @@ public class DriverController {
     public @ResponseBody ResponseEntity<?> getAllDrivers(Principal principal)
     {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Set<Driver> driverList = driverService.getAllDrivers(principal.getName());
         if (driverList.size() == 0) {
             error = new Error(Error.LIST_ENTITIES_EMPTY_MESSAGE, Error.LIST_ENTITIES_EMPTY_STATUS, HttpStatus.NOT_FOUND.value());
@@ -41,6 +45,10 @@ public class DriverController {
     public @ResponseBody ResponseEntity<?> getDriverById(Principal principal, @PathVariable("id") Long id)
     {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         Driver driver = driverService.getDriverById(principal.getName(), id);
         if (driver == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
@@ -54,6 +62,10 @@ public class DriverController {
     public @ResponseBody ResponseEntity<?> addDriver(Principal principal, @RequestBody Driver driver, BindingResult bindingResult)
     {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         driverValidator.validate(driver, bindingResult);
         if (bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
@@ -76,6 +88,10 @@ public class DriverController {
     public @ResponseBody ResponseEntity<?> updateDriver(Principal principal, @PathVariable("id") Long id, @RequestBody Driver driver, BindingResult bindingResult)
     {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         if (driverService.getDriverById(principal.getName(), id) == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
@@ -104,6 +120,10 @@ public class DriverController {
     public @ResponseBody ResponseEntity<?> deleteDriver(Principal principal, @PathVariable("id") Long id)
     {
         Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         if (driverService.getDriverById(principal.getName(), id) == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
