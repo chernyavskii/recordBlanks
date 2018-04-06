@@ -559,10 +559,16 @@ public class DocumentServiceImpl implements DocumentService {
         return documentDAO.save(doc);
     }
 
-    public Document addPdfPng(String username, Long document_id, byte[] documentPdf, byte[] documentPng)
+    public Document addPdf(String username, Long document_id, byte[] documentPdf)
     {
         Document document = documentDAO.findOne(document_id);
         document.setDocumentPdf(documentPdf);
+        return documentDAO.save(document);
+    }
+
+    public Document addPng(String username, Long document_id, byte[] documentPng)
+    {
+        Document document = documentDAO.findOne(document_id);
         document.setDocumentPng(documentPng);
         return documentDAO.save(document);
     }

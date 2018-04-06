@@ -223,11 +223,17 @@ public class DocumentController
         }
     }
 
-    @RequestMapping(value = "/convert/{id}", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addPdfPng(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> documents)
+    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addPdf(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> document)
     {
-        byte[] documentPdf = Base64.decodeBase64(documents.get("documentPdf").getBytes());
-        byte[] documentPng = Base64.decodeBase64(documents.get("documentPng").getBytes());
-        return new ResponseEntity<>(documentService.addPdfPng(principal.getName(), id, documentPdf, documentPng), HttpStatus.OK);
+        byte[] pdf = Base64.decodeBase64(document.get("documentPdf").getBytes());
+        return new ResponseEntity<>(documentService.addPdf(principal.getName(), id, pdf), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/png/{id}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addPng(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> document)
+    {
+        byte[] png = Base64.decodeBase64(document.get("documentPng").getBytes());
+        return new ResponseEntity<>(documentService.addPng(principal.getName(), id, png), HttpStatus.OK);
     }
 }
