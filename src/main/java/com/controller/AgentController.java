@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.Agent;
+import com.model.RequestWrapper;
 import com.service.agent.AgentService;
 import com.errors.Error;
 import com.validator.AgentValidator;
@@ -125,6 +126,9 @@ public class AgentController {
             @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
+        RequestWrapper requestWrapper = new RequestWrapper();
+        requestWrapper.setAgent_id(id);
+        requestWrapper.setAgent(agent);
         Error error;
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());

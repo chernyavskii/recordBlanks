@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.security.Principal;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -55,7 +57,7 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Return Document", response = Document.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id) throws IOException, java.lang.Exception {
+    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam String type) throws IOException, java.lang.Exception {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
@@ -67,10 +69,22 @@ public class DocumentController
         }
         else {
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.setContentLength(document.getDocument().length);
+            if("pdf".equals(type)) {
+                responseHeaders.setContentLength(document.getDocumentPdf().length);
+                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+                responseHeaders.setContentType(MediaType.valueOf("application/pdf"));
+                return new ResponseEntity<byte[]>(document.getDocumentPdf(), responseHeaders, HttpStatus.OK);
+            }
+            if("png".equals(type)) {
+                responseHeaders.setContentLength(document.getDocumentPng().length);
+                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+                responseHeaders.setContentType(MediaType.valueOf("image/png"));
+                return new ResponseEntity<byte[]>(document.getDocumentPng(), responseHeaders, HttpStatus.OK);
+            }
+            responseHeaders.setContentLength(document.getDocumentExcel().length);
             responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
             responseHeaders.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-            return new ResponseEntity<byte[]>(document.getDocument(), responseHeaders, HttpStatus.OK);
+            return new ResponseEntity<byte[]>(document.getDocumentExcel(), responseHeaders, HttpStatus.OK);
         }
     }
 
@@ -207,5 +221,13 @@ public class DocumentController
         else {
             return new ResponseEntity<>(documentService.addDocumentSF(principal.getName(), requestWrapper.getDocumentName(), requestWrapper.getAgent_id(), requestWrapper.getProducts()), HttpStatus.OK);
         }
+    }
+
+    @RequestMapping(value = "/convert/{id}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addPdfPng(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> documents)
+    {
+        byte[] documentPdf = Base64.decodeBase64(documents.get("documentPdf").getBytes());
+        byte[] documentPng = Base64.decodeBase64(documents.get("documentPng").getBytes());
+        return new ResponseEntity<>(documentService.addPdfPng(principal.getName(), id, documentPdf, documentPng), HttpStatus.OK);
     }
 }

@@ -491,7 +491,7 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        doc.setDocument(document);
+        doc.setDocumentExcel(document);
         //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setName(documentName);
         doc.setDate(sdf.format(date));
@@ -511,7 +511,7 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileTTN(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        doc.setDocument(document);
+        doc.setDocumentExcel(document);
         //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setName(documentName);
         doc.setDate(sdf.format(date));
@@ -531,7 +531,7 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileASPR(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        doc.setDocument(document);
+        doc.setDocumentExcel(document);
         //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setName(documentName);
         doc.setDate(sdf.format(date));
@@ -551,11 +551,19 @@ public class DocumentServiceImpl implements DocumentService {
         File newFile = writeToFileSF(file, workbook);
         byte[] document = Files.readAllBytes(newFile.toPath());
         FileUtils.writeByteArrayToFile(file, b);
-        doc.setDocument(document);
+        doc.setDocumentExcel(document);
         //doc.setName(newFile.getName().substring(0, newFile.getName().indexOf('.')) + " (" + sdf.format(date) + ")");
         doc.setName(documentName);
         doc.setDate(sdf.format(date));
         doc.setUser(userDAO.findByUsername(username));
         return documentDAO.save(doc);
+    }
+
+    public Document addPdfPng(String username, Long document_id, byte[] documentPdf, byte[] documentPng)
+    {
+        Document document = documentDAO.findOne(document_id);
+        document.setDocumentPdf(documentPdf);
+        document.setDocumentPng(documentPng);
+        return documentDAO.save(document);
     }
 }

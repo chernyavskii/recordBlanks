@@ -9,7 +9,9 @@ public class Document {
     private Long id;
     private String name;
     private String type;
-    private byte[] document;
+    private byte[] documentExcel;
+    private byte[] documentPdf;
+    private byte[] documentPng;
     private String date;
     private User user;
 
@@ -44,14 +46,36 @@ public class Document {
     }
 
     @Basic
-    @Column(name = "document")
+    @Column(name = "documentExcel")
     @JsonIgnore
-    public byte[] getDocument() {
-        return document;
+    public byte[] getDocumentExcel() {
+        return documentExcel;
     }
 
-    public void setDocument(byte[] document) {
-        this.document = document;
+    public void setDocumentExcel(byte[] documentExcel) {
+        this.documentExcel = documentExcel;
+    }
+
+    @Basic
+    @Column(name = "documentPdf")
+    @JsonIgnore
+    public byte[] getDocumentPdf() {
+        return documentPdf;
+    }
+
+    public void setDocumentPdf(byte[] documentPdf) {
+        this.documentPdf = documentPdf;
+    }
+
+    @Basic
+    @Column(name = "documentPng")
+    @JsonIgnore
+    public byte[] getDocumentPng() {
+        return documentPng;
+    }
+
+    public void setDocumentPng(byte[] documentPng) {
+        this.documentPng = documentPng;
     }
 
     @Basic

@@ -2,6 +2,7 @@ package com.validator;
 
 import com.errors.Error;
 import com.model.Agent;
+import com.model.RequestWrapper;
 import com.service.agent.AgentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,12 +29,15 @@ public class AgentValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return Agent.class.equals(aClass);
+        return RequestWrapper.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        Agent agent = (Agent)o;
+        RequestWrapper requestWrapper = (RequestWrapper) o;
+        Agent agent = requestWrapper.getAgent();
+        Long agent_id = requestWrapper.getAgent_id();
+        agent.setId(agent_id);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
