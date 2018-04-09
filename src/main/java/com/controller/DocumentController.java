@@ -57,7 +57,7 @@ public class DocumentController
             @ApiResponse(code = 200, message = "Return Document", response = Document.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam String type) throws IOException, java.lang.Exception {
+    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam(value = "type", required = false) String type) throws IOException, java.lang.Exception {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
@@ -145,6 +145,10 @@ public class DocumentController
     @RequestMapping(value = "/ttn", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> addDocumentTTN(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         documentValidator.setType("ttn");
         documentValidator.validate(requestWrapper, bindingResult);
         Error error;
@@ -172,6 +176,10 @@ public class DocumentController
     @RequestMapping(value = "/aspr", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> addDocumentASPR(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         documentValidator.setType("aspr");
         documentValidator.validate(requestWrapper, bindingResult);
         Error error;
@@ -199,6 +207,10 @@ public class DocumentController
     @RequestMapping(value = "/sf", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> addDocumentSF(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
         documentValidator.setType("sf");
         documentValidator.validate(requestWrapper, bindingResult);
         Error error;
@@ -223,17 +235,29 @@ public class DocumentController
         }
     }
 
-    @RequestMapping(value = "/pdf/{id}", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addPdf(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> document)
+    @RequestMapping(value = "/convert/{id}", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<?> addPdf(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> documents) throws IOException
     {
-        byte[] pdf = Base64.decodeBase64(document.get("documentPdf").getBytes());
-        return new ResponseEntity<>(documentService.addPdf(principal.getName(), id, pdf), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/png/{id}", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addPng(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> document)
-    {
-        byte[] png = Base64.decodeBase64(document.get("documentPng").getBytes());
-        return new ResponseEntity<>(documentService.addPng(principal.getName(), id, png), HttpStatus.OK);
+        Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        Document document = documentService.getDocumentById(principal.getName(), id);
+        if(document == null) {
+            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+        }
+        if("".equals(documents.get("documentPdf"))) {
+            error = new Error(" 'documentPdf': " + Error.EMPTY_FIELD_MESSAGE, Error.EMPTY_FIELD_STATUS, HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+        }
+        if("".equals(documents.get("documentPng"))) {
+            error = new Error(" 'documentPng': " + Error.EMPTY_FIELD_MESSAGE, Error.EMPTY_FIELD_STATUS, HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+        }
+        byte[] pdf = Base64.decodeBase64(documents.get("documentPdf").getBytes());
+        byte[] png = Base64.decodeBase64(documents.get("documentPng").getBytes());
+        return new ResponseEntity<>(documentService.convert(principal.getName(), id, pdf, png), HttpStatus.OK);
     }
 }

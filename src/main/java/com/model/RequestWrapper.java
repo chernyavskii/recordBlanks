@@ -12,6 +12,8 @@ public class RequestWrapper
     private Agent agent;
     private List<Product> products;
     private List<Work> works;
+    private String documentPdf;
+    private String documentPng;
 
     public String getDocumentName() { return documentName; }
 
@@ -72,4 +74,12 @@ public class RequestWrapper
     public void setWorks(List<Work> works) {
         this.works = works;
     }
+
+    public String getDocumentPdf() { return documentPdf; }
+
+    public void setDocumentPdf(String documentPdf) { this.documentPdf = documentPdf; }
+
+    public String getDocumentPng() { return documentPng; }
+
+    public void setDocumentPng(String documentPng) { this.documentPng = documentPng; }
 }
