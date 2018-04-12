@@ -8,12 +8,14 @@ public class RequestWrapper
     private Long agent_id;
     private Long driver_id;
     private Long user_id;
+    private Long document_id;
     private User user;
     private Agent agent;
     private List<Product> products;
     private List<Work> works;
     private String documentPdf;
     private String documentPng;
+    private String role;
 
     public String getDocumentName() { return documentName; }
 
@@ -42,6 +44,10 @@ public class RequestWrapper
     public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
+
+    public Long getDocument_id() { return document_id; }
+
+    public void setDocument_id(Long document_id) { this.document_id = document_id; }
 
     public User getUser() {
         return user;
@@ -82,4 +88,8 @@ public class RequestWrapper
     public String getDocumentPng() { return documentPng; }
 
     public void setDocumentPng(String documentPng) { this.documentPng = documentPng; }
+
+    public String getRole() { return role; }
+
+    public void setRole(String role) { this.role = role; }
 }

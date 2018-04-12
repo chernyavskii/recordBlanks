@@ -64,6 +64,10 @@ public class Error
     public static final String FIELD_INCORRECT_MESSAGE = "a field is incorrect";
     public static final String FIELD_INCORRECT_STATUS = "400 bad request";
 
+    /*SHARING SERVICE*/
+    public static final String USER_IS_NOT_REGISTERED_MESSAGE = "user is not registered";
+    public static final String USER_IS_NOT_REGISTERED_STATUS = "404 not found";
+
     public Error(){}
 
     public Error(String message, int code)

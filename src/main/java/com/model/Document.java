@@ -3,6 +3,7 @@ package com.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Document {
@@ -14,6 +15,7 @@ public class Document {
     private byte[] documentPng;
     private String date;
     private User user;
+    private Agent agent;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -98,4 +100,11 @@ public class Document {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "Sharing", joinColumns = { @JoinColumn(name = "document_id") }, inverseJoinColumns = { @JoinColumn(name = "agent_id") })
+    @JsonIgnore
+    public Agent getAgent() { return agent; }
+
+    public void setAgent(Agent agent) { this.agent = agent; }
 }

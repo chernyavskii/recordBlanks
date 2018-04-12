@@ -55,6 +55,17 @@ public class UserServiceImpl implements UserService {
        return user;
     }
 
+    public User addUser(User user, String r) {
+        Role role = new Role();
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setConfirmPassword(bCryptPasswordEncoder.encode(user.getConfirmPassword()));
+        userDAO.save(user);
+        role.setName(r);
+        role.setUser(user);
+        roleDAO.save(role);
+        return user;
+    }
+
     //@Override
     public User findById(Long id) {
         return userDAO.findOne(id);
@@ -71,7 +82,8 @@ public class UserServiceImpl implements UserService {
     }
 
     //@Override
-    public User updateById(User user, Long id) {
+    public User updateById(User user, Long id, String r) {
+        Role role = new Role();
         User findUser = userDAO.findOne(id);
 /*
         findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -89,7 +101,11 @@ public class UserServiceImpl implements UserService {
         findUser.setBank(user.getBank());
         findUser.setBik(user.getBik());
         findUser.setPhone(user.getPhone());
-        return userDAO.save(findUser);
+        userDAO.save(findUser);
+        role.setName(r);
+        role.setUser(user);
+        roleDAO.save(role);
+        return findUser;
     }
 
     public User updatePassword(String username, String newPassword) {

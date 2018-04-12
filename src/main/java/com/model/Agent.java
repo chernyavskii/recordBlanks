@@ -3,6 +3,8 @@ package com.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Agent {
@@ -20,6 +22,7 @@ public class Agent {
     private String bik;
     private String phone;
     private User user;
+    private Set<Document> documents;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -161,4 +164,10 @@ public class Agent {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "Sharing", joinColumns = { @JoinColumn(name = "agent_id") }, inverseJoinColumns = { @JoinColumn(name = "document_id") })
+    public Set<Document> getDocuments() { return documents; }
+
+    public void setDocuments(Set<Document> documents) { this.documents = documents; }
 }

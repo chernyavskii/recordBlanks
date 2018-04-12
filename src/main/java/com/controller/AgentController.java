@@ -84,6 +84,7 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> addAgentInJSON(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
+        RequestWrapper requestWrapper = new RequestWrapper();
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);

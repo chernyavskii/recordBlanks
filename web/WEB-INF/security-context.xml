@@ -12,6 +12,7 @@
         <intercept-url pattern="/documents/"/>
         <intercept-url pattern="/drivers/"/>
         <intercept-url pattern="/users/"/>
+        <intercept-url pattern="/sharing/"/>
         <intercept-url pattern="/main" access="isAuthenticated()" method="GET"/>
 
         <http-basic />

@@ -91,6 +91,12 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public @ResponseBody User addUser(Principal principal, @RequestBody RequestWrapper requestWrapper)
+    {
+        return userService.addUser(requestWrapper.getUser(), requestWrapper.getRole());
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
@@ -126,10 +132,8 @@ public class UserController {
             @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> updateUserById(Principal principal, @PathVariable("id") Long id, @RequestBody User user, BindingResult bindingResult) {
-        RequestWrapper requestWrapper = new RequestWrapper();
+    public @ResponseBody ResponseEntity<?> updateUserById(Principal principal, @PathVariable("id") Long id, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) {
         requestWrapper.setUser_id(id);
-        requestWrapper.setUser(user);
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
@@ -178,7 +182,7 @@ public class UserController {
                         return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
-            return new ResponseEntity<User>(userService.updateById(user, id), HttpStatus.OK);
+            return new ResponseEntity<User>(userService.updateById(requestWrapper.getUser(), id, requestWrapper.getRole()), HttpStatus.OK);
         }
     }
 
