@@ -36,8 +36,6 @@ public class AgentValidator implements Validator {
     public void validate(Object o, Errors errors) {
         RequestWrapper requestWrapper = (RequestWrapper) o;
         Agent agent = requestWrapper.getAgent();
-        Long agent_id = requestWrapper.getAgent_id();
-        agent.setId(agent_id);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);

@@ -27,6 +27,7 @@ public class IndexValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"confirmPassword", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"middleName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
@@ -42,6 +43,9 @@ public class IndexValidator implements Validator {
 
         if(user.getPassword().length() < 8){
             errors.rejectValue("password", Error.PASSWORD_LENGTH_STATUS, Error.PASSWORD_LENGTH_MESSAGE);
+        }
+        if(!user.getPassword().equals(user.getConfirmPassword())) {
+            errors.rejectValue("password", Error.PASSWORD_DO_NOT_MATCH_STATUS, Error.PASSWORD_DO_NOT_MATCH_MESSAGE);
         }
         if(userService.checkUsername(user, "post").booleanValue()) {
             errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);

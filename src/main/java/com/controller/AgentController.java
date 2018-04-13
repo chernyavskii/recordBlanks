@@ -85,12 +85,13 @@ public class AgentController {
     public @ResponseBody ResponseEntity<?> addAgentInJSON(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
         RequestWrapper requestWrapper = new RequestWrapper();
+        requestWrapper.setAgent(agent);
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
         agentValidator.setMethod("post");
-        agentValidator.validate(agent, bindingResult);
+        agentValidator.validate(requestWrapper, bindingResult);
         if (bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
                 case Error.FIO_INCORRECT_MESSAGE:
@@ -128,7 +129,7 @@ public class AgentController {
     })
     public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
         RequestWrapper requestWrapper = new RequestWrapper();
-        requestWrapper.setAgent_id(id);
+        agent.setId(id);
         requestWrapper.setAgent(agent);
         Error error;
         if (principal == null) {
@@ -140,7 +141,7 @@ public class AgentController {
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
             agentValidator.setMethod("update");
-            agentValidator.validate(agent, bindingResult);
+            agentValidator.validate(requestWrapper, bindingResult);
             if(bindingResult.hasErrors()) {
                 switch (bindingResult.getFieldError().getDefaultMessage()) {
                     case Error.FIO_INCORRECT_MESSAGE:

@@ -77,7 +77,7 @@ public class UserController {
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
         for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
-            if(!role.getName().equals("ROLE_ADMIN")) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && id == userService.findByUsername(principal.getName()).getId()))) {
                 Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
                 return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
@@ -94,6 +94,16 @@ public class UserController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<?> addUser(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult)
     {
+        if (principal == null) {
+            Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!role.getName().equals("ROLE_ADMIN")) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+        }
         userValidator.setMethod("post");
         userValidator.validate(requestWrapper, bindingResult);
         if (bindingResult.hasErrors()) {
