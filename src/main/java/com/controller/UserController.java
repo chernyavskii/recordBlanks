@@ -92,9 +92,52 @@ public class UserController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public @ResponseBody User addUser(Principal principal, @RequestBody RequestWrapper requestWrapper)
+    public @ResponseBody ResponseEntity<?> addUser(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult)
     {
-        return userService.addUser(requestWrapper.getUser(), requestWrapper.getRole());
+        userValidator.setMethod("post");
+        userValidator.validate(requestWrapper, bindingResult);
+        if (bindingResult.hasErrors()) {
+            Error error;
+            switch(bindingResult.getFieldError().getDefaultMessage())
+            {
+                case Error.DUPLICATED_ENTITY_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                case Error.EMPTY_FIELD_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PASSWORD_LENGTH_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PASSWORD_DO_NOT_MATCH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.USERNAME_LENGTH_MESSAGE :
+                    error = new Error(" '"+bindingResult.getFieldError().getField()+"'"+": "+bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.FIO_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.UNP_BIK_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.RS_KS_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PHONE_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.WRONG_ROLE_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default :
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<>(userService.addUser(requestWrapper.getUser(), requestWrapper.getRole()), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -143,6 +186,10 @@ public class UserController {
                 Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
                 return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
+            else if(role.getName().equals("ROLE_USER") && "ROLE_ADMIN".equals(requestWrapper.getRole())) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
         }
         userValidator.setMethod("update");
         userValidator.validate(requestWrapper, bindingResult);
@@ -175,6 +222,9 @@ public class UserController {
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.PHONE_INCORRECT_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.WRONG_ROLE_MESSAGE:
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     default:

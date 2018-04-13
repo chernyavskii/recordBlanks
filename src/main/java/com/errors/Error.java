@@ -50,6 +50,9 @@ public class Error
     public static final String NO_ACCESS_MESSAGE = "insufficient access rights";
     public static final String NO_ACCESS_STATUS = "403 forbidden";
 
+    public static final String WRONG_ROLE_MESSAGE = "wrong role";
+    public static final String WRONG_ROLE_STATUS = "400 bad request";
+
     /*AGENT SERVICE*/
     public static final String UNP_BIK_LENGTH_MESSAGE = "a field must be bellow 9 numbers";
     public static final String UNP_BIK_LENGTH_STATUS = "400 bad request";

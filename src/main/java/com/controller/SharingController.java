@@ -74,9 +74,9 @@ public class SharingController {
                 case Error.USER_IS_NOT_REGISTERED_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
                     return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-                case Error.EMPTY_FIELD_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
-                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.ENTITY_NOT_FOUND_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.NOT_FOUND.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
                 default:
                     error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
                     return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,8 +87,18 @@ public class SharingController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody Document deleteSharedDocument(Principal principal, @PathVariable("id") Long id)
+    public @ResponseBody ResponseEntity<?> deleteSharedDocument(Principal principal, @PathVariable("id") Long id)
     {
-        return sharingService.deleteSharedDocument(principal.getName(), id);
+        Error error;
+        if (principal == null) {
+            error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
+            return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
+        }
+        if (sharingService.getSharedDocumentById(principal.getName(), id) == null) {
+            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(sharingService.deleteSharedDocument(principal.getName(), id), HttpStatus.OK);
+        }
     }
 }

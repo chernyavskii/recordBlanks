@@ -4,6 +4,7 @@ import com.model.User;
 import com.service.security.SecurityService;
 import com.service.user.UserService;
 import com.errors.Error;
+import com.validator.IndexValidator;
 import com.validator.UserValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,8 @@ public class IndexController {
     @Autowired
     private SecurityService securityService;
 
-    @Autowired UserValidator userValidator;
+    @Autowired
+    private IndexValidator indexValidator;
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ApiOperation(value = "New User registration", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
@@ -48,8 +50,7 @@ public class IndexController {
             @ApiResponse(code = 500, message = "server error", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult)  {
-        userValidator.setMethod("post");
-        userValidator.validate(user, bindingResult);
+        indexValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             Error error;
             switch(bindingResult.getFieldError().getDefaultMessage())

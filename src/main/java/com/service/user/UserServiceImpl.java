@@ -38,12 +38,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    //@Transactional
     public List<User> findAll() {
         return userDAO.findAll();
     }
 
-    //@Transactional
     public User save(User user) {
         Role role = new Role();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -66,12 +64,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    //@Override
     public User findById(Long id) {
         return userDAO.findOne(id);
     }
 
-    //@Override
     public Object deleteById(Long id) {
         User user = userDAO.findOne(id);
         agentDAO.delete(user.getAgents());
@@ -81,13 +77,8 @@ public class UserServiceImpl implements UserService {
         return "{\"success\":true}";
     }
 
-    //@Override
     public User updateById(User user, Long id, String r) {
-        Role role = new Role();
         User findUser = userDAO.findOne(id);
-/*
-        findUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-*/
         findUser.setUsername(user.getUsername());
         findUser.setFirstName(user.getFirstName());
         findUser.setMiddleName(user.getMiddleName());
@@ -102,9 +93,11 @@ public class UserServiceImpl implements UserService {
         findUser.setBik(user.getBik());
         findUser.setPhone(user.getPhone());
         userDAO.save(findUser);
-        role.setName(r);
-        role.setUser(user);
-        roleDAO.save(role);
+        for(Role rol : findUser.getRoles()) {
+            rol.setName(r);
+            rol.setUser(findUser);
+            roleDAO.save(rol);
+        }
         return findUser;
     }
 
@@ -114,12 +107,7 @@ public class UserServiceImpl implements UserService {
         return userDAO.save(user);
     }
 
-    //@Override
     public User findByUsername(String username) {
-  /*      User findUser = userDAO.findByUsername(username);
-        String decodedPassword = null;
-        bCryptPasswordEncoder.(decodedPassword,findUser.getPassword());
-        findUser.setPassword(decodedPassword);*/
         return userDAO.findByUsername(username);
     }
 
