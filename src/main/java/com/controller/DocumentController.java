@@ -2,8 +2,10 @@ package com.controller;
 
 import com.model.Document;
 import com.model.RequestWrapper;
+import com.model.Role;
 import com.service.document.DocumentService;
 import com.errors.Error;
+import com.service.user.UserService;
 import com.validator.DocumentValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +30,9 @@ public class DocumentController
 {
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired DocumentValidator documentValidator;
 
@@ -134,12 +139,17 @@ public class DocumentController
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        if (documentService.getDocumentById(principal.getName(),id) == null) {
-            Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<Object>(documentService.deleteDocument(principal.getName(), id), HttpStatus.OK);
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && documentService.getDocumentById(principal.getName(), id) != null))) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+            else if(documentService.getDocument(id) == null) {
+                Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+            }
         }
+        return new ResponseEntity<Object>(documentService.deleteDocument(principal.getName(), id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ttn", method = RequestMethod.POST)

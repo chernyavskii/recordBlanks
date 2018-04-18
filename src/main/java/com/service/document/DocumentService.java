@@ -13,6 +13,7 @@ import java.util.Set;
 public interface DocumentService {
     Set<Document> getAllDocuments(String username);
     Document getDocumentById(String username, Long id) throws IOException;
+    Document getDocument(Long id);
     Document addDocumentTN(String username, String documentName, Long id, List<Product> products) throws IOException;
     Document addDocumentTTN(String username, String documentName, Long agent_id, Long driver_id, List<Product> products) throws IOException;
     Document addDocumentASPR(String username, String documentName, Long agent_id, List<Work> works) throws IOException;

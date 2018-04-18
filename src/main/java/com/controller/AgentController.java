@@ -146,6 +146,10 @@ public class AgentController {
                 error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
                 return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
+            else if(agentService.getAgent(id) == null) {
+                error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+            }
         }
         agentValidator.setMethod("update");
         agentValidator.validate(requestWrapper, bindingResult);
@@ -192,11 +196,16 @@ public class AgentController {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        if (agentService.getAgentById(principal.getName(), id) == null) {
-            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<Object>(agentService.deleteAgent(principal.getName(), id), HttpStatus.OK);
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && agentService.getAgentById(principal.getName(), id) != null))) {
+                error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+            else if(agentService.getAgent(id) == null) {
+                error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+            }
         }
+        return new ResponseEntity<Object>(agentService.deleteAgent(principal.getName(), id), HttpStatus.OK);
     }
 }

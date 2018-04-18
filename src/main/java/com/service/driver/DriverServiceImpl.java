@@ -34,6 +34,10 @@ public class DriverServiceImpl implements DriverService {
         return  null;
     }
 
+    public Driver getDriver(Long id) {
+        return driverDAO.findOne(id);
+    }
+
     public Driver addDriver(String username, Driver driver) {
         Driver drv = new Driver();
         drv.setFirstName(driver.getFirstName());
@@ -48,17 +52,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     public Driver deleteDriver(String username, Long id) {
-        Driver driver = new Driver();
-        for(Driver drv : userDAO.findByUsername(username).getDrivers())
-        {
-            if(id == drv.getId())
-            {
-                driver = drv;
-                driverDAO.delete(id);
-                return  driver;
-            }
-        }
-        return  null;
+        Driver driver = driverDAO.findOne(id);
+        driverDAO.delete(id);
+        return  driver;
     }
 
     public Driver updateDriver(String username, Long id, Driver driver) {

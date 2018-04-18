@@ -2,7 +2,9 @@ package com.controller;
 
 import com.errors.Error;
 import com.model.Driver;
+import com.model.Role;
 import com.service.driver.DriverService;
+import com.service.user.UserService;
 import com.validator.DriverValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class DriverController {
 
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     DriverValidator driverValidator;
@@ -92,27 +97,32 @@ public class DriverController {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        if (driverService.getDriverById(principal.getName(), id) == null) {
-            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        } else {
-            driverValidator.validate(driver, bindingResult);
-            if(bindingResult.hasErrors()) {
-                switch (bindingResult.getFieldError().getDefaultMessage()) {
-                    case Error.FIO_INCORRECT_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    case Error.EMPTY_FIELD_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    default:
-                        error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && driverService.getDriverById(principal.getName(), id) != null))) {
+                error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
-            else {
-                return new ResponseEntity<Driver>(driverService.updateDriver(principal.getName(), id, driver), HttpStatus.OK);
+            else if(driverService.getDriver(id) == null) {
+                error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
             }
+        }
+        driverValidator.validate(driver, bindingResult);
+        if(bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.FIO_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        else {
+            return new ResponseEntity<Driver>(driverService.updateDriver(principal.getName(), id, driver), HttpStatus.OK);
         }
     }
 
@@ -124,11 +134,16 @@ public class DriverController {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        if (driverService.getDriverById(principal.getName(), id) == null) {
-            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<Object>(driverService.deleteDriver(principal.getName(), id), HttpStatus.OK);
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && driverService.getDriverById(principal.getName(), id) != null))) {
+                error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+            else if(driverService.getDriver(id) == null) {
+                error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+            }
         }
+        return new ResponseEntity<Object>(driverService.deleteDriver(principal.getName(), id), HttpStatus.OK);
     }
 }

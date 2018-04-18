@@ -45,18 +45,14 @@ public class DocumentServiceImpl implements DocumentService {
         return null;
     }
 
+    public Document getDocument(Long id) {
+        return documentDAO.findOne(id);
+    }
+
     public Document deleteDocument(String username, Long id) {
-        Document document = new Document();
-        for(Document doc : userDAO.findByUsername(username).getDocuments())
-        {
-            if(id == doc.getId())
-            {
-                document = doc;
-                documentDAO.delete(id);
-                return document;
-            }
-        }
-        return null;
+        Document document = documentDAO.findOne(id);
+        documentDAO.delete(id);
+        return document;
     }
 
     public File createFileTN()

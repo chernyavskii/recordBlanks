@@ -60,17 +60,9 @@ public class AgentServiceImpl implements AgentService {
     }
 
     public Agent deleteAgent(String username, Long id) {
-        Agent agent = new Agent();
-        for(Agent agn : userDAO.findByUsername(username).getAgents())
-        {
-            if(id == agn.getId())
-            {
-                agent = agn;
-                agentDAO.delete(id);
-                return  agent;
-            }
-        }
-        return  null;
+        Agent agent = agentDAO.findOne(id);
+        agentDAO.delete(id);
+        return  agent;
     }
 
     public Agent updateAgent(String username, Long id, Agent agent) {
