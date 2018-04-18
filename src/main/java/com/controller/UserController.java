@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    ////////////////////////// CRoSS ORIGIN ИЗМЕНИЛ
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @CrossOrigin(origins = "*")
     @ApiOperation(value = "Get list of users", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
@@ -262,15 +260,4 @@ public class UserController {
         }
         return new ResponseEntity<User>(userService.updatePassword(principal.getName(), passwords.get("newPassword")), HttpStatus.OK);
     }
-
-  /*  @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<?> currentUserName(@PathVariable String username) {
-        return new ResponseEntity<User>(userService.findByUsername(username), HttpStatus.OK);
-    }*/
-
-   /* @RequestMapping(value = " /order/{orderId}", method=RequestMethod.GET)
-    public String getOrder(@PathVariable String orderId){
-//fetch order
-    }*/
 }

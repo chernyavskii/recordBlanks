@@ -2,8 +2,10 @@ package com.controller;
 
 import com.model.Agent;
 import com.model.RequestWrapper;
+import com.model.Role;
 import com.service.agent.AgentService;
 import com.errors.Error;
+import com.service.user.UserService;
 import com.validator.AgentValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +29,9 @@ public class AgentController {
 
     @Autowired
     private AgentService agentService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     AgentValidator agentValidator;
@@ -136,40 +141,41 @@ public class AgentController {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        if (agentService.getAgentById(principal.getName(), id) == null) {
-            error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
-        } else {
-            agentValidator.setMethod("update");
-            agentValidator.validate(requestWrapper, bindingResult);
-            if(bindingResult.hasErrors()) {
-                switch (bindingResult.getFieldError().getDefaultMessage()) {
-                    case Error.FIO_INCORRECT_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    case Error.UNP_BIK_LENGTH_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    case Error.RS_KS_LENGTH_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    case Error.PHONE_INCORRECT_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    case Error.DUPLICATED_ENTITY_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
-                    case Error.EMPTY_FIELD_MESSAGE:
-                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
-                    default:
-                        error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
-                        return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && agentService.getAgentById(principal.getName(), id) != null))) {
+                error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
-            else {
-                return new ResponseEntity<Agent>(agentService.updateAgent(principal.getName(), id, agent), HttpStatus.OK);
+        }
+        agentValidator.setMethod("update");
+        agentValidator.validate(requestWrapper, bindingResult);
+        if(bindingResult.hasErrors()) {
+            switch (bindingResult.getFieldError().getDefaultMessage()) {
+                case Error.FIO_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.UNP_BIK_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.RS_KS_LENGTH_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.PHONE_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.DUPLICATED_ENTITY_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.CONFLICT);
+                case Error.EMPTY_FIELD_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                default:
+                    error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        }
+        else {
+            return new ResponseEntity<Agent>(agentService.updateAgent(principal.getName(), id, agent), HttpStatus.OK);
         }
     }
 

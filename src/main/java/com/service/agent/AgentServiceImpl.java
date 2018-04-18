@@ -37,6 +37,10 @@ public class AgentServiceImpl implements AgentService {
         return  null;
     }
 
+    public Agent getAgent(Long id) {
+        return agentDAO.findOne(id);
+    }
+
     public Agent addAgent(String username, Agent agent) {
         Agent agnt = new Agent();
         agnt.setFirstName(agent.getFirstName());
