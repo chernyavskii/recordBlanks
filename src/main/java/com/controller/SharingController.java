@@ -5,8 +5,13 @@ import com.model.Document;
 import com.model.RequestWrapper;
 import com.service.sharing.SharingService;
 import com.validator.SharingValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,6 +23,7 @@ import java.util.Set;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "sharing")
+@Api(tags = "Sharing", description = "APIs for working with shared documents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SharingController {
 
     @Autowired
@@ -27,6 +33,13 @@ public class SharingController {
     private SharingValidator sharingValidator;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ApiOperation(value = "Get list of shared documents", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return list of shared documents", response = Document.class, responseContainer = "Set"),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "List of shared documents are empty", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> getAllSharedDocuments(Principal principal)
     {
         Error error;
@@ -44,7 +57,14 @@ public class SharingController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<?> getAllSharedDocumentById(Principal principal, @PathVariable("id") Long id)
+    @ApiOperation(value = "Get shared document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return shared Document", response = Document.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Shared Document not found", response = Error.class)
+    })
+    public @ResponseBody ResponseEntity<?> getSharedDocumentById(Principal principal, @PathVariable("id") Long id)
     {
         Error error;
         if (principal == null) {
@@ -61,6 +81,15 @@ public class SharingController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ApiOperation(value = "Share Document", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return shared Document", response = Document.class),
+            @ApiResponse(code = 201, message = "Return shared Document", response = Document.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> shareDocument(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult)
     {
         Error error;
@@ -87,6 +116,14 @@ public class SharingController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete shared Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Deleted successfully",response = Document.class),
+            @ApiResponse(code = 204, message = "No content",response = Document.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Shared Document not found", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> deleteSharedDocument(Principal principal, @PathVariable("id") Long id)
     {
         Error error;

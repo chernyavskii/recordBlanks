@@ -25,7 +25,7 @@ import java.util.Map;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "users")
-@Api(value = "UserControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(tags = "User", description = "APIs for working with users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
@@ -38,11 +38,13 @@ public class UserController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @CrossOrigin(origins = "*")
     @ApiOperation(value = "Get list of users", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "List"),
-            @ApiResponse(code = 404, message = "List of users are empty", response = Error.class)})
+            @ApiResponse(code = 200, message = "Return list of users", response = User.class, responseContainer = "Set"),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "List of users are empty", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> getAllUsers(Principal principal) {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
@@ -64,9 +66,11 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ApiOperation(value = "Get User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class, responseContainer = "List")
+    @ApiOperation(value = "Get User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return User", response = User.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> getUserById(Principal principal, @PathVariable("id") Long id) {
@@ -90,6 +94,17 @@ public class UserController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ApiOperation(value = "Add a new User", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return a new User", response = User.class),
+            @ApiResponse(code = 201, message = "Return a new User", response = User.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> addUser(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult)
     {
         if (principal == null) {
@@ -151,7 +166,10 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Deleted successfully", response = Object.class),
+            @ApiResponse(code = 200, message = "Deleted successfully",response = User.class),
+            @ApiResponse(code = 204, message = "No content",response = User.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "User not found", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> deleteUserById(Principal principal, @PathVariable("id") Long id) {
@@ -176,12 +194,14 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ApiOperation(value = "Update User by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return updated User", response = User.class),
-            @ApiResponse(code = 409, message = "'username' already exist in system", response = Error.class),
-            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class),
-            @ApiResponse(code = 400, message = "'password' a field must be bellow 8 characters", response = Error.class),
-            @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
-            @ApiResponse(code = 500, message = "server error", response = Error.class)
+            @ApiResponse(code = 200, message = "Return User", response = User.class),
+            @ApiResponse(code = 201, message = "Return User", response = User.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "User not found", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> updateUserById(Principal principal, @PathVariable("id") Long id, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) {
         requestWrapper.setUser_id(id);
@@ -245,6 +265,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.PUT)
+    @ApiOperation(value = "Update password", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return User",response = User.class),
+            @ApiResponse(code = 201, message = "Return User", response = User.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> updatePassword(Principal principal, @RequestBody Map<String, String> passwords) {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());

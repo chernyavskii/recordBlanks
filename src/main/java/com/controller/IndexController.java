@@ -27,7 +27,7 @@ import java.security.Principal;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/")
-@Api(value = "IndexControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(tags = "Index", description = "APIs for working with accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IndexController {
 
     @Autowired
@@ -40,14 +40,15 @@ public class IndexController {
     private IndexValidator indexValidator;
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    @ApiOperation(value = "New User registration", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiOperation(value = "Registration new User", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return a new User",response = User.class),
-            @ApiResponse(code = 409, message = "'username' already exist in system", response = Error.class),
-            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class),
-            @ApiResponse(code = 400, message = "'password' a field must be bellow 8 characters", response = Error.class),
-            @ApiResponse(code = 400, message = "'username' a field must be bellow 5 characters", response = Error.class),
-            @ApiResponse(code = 500, message = "server error", response = Error.class)
+            @ApiResponse(code = 200, message = "Return a new User", response = User.class),
+            @ApiResponse(code = 201, message = "Return a new User", response = User.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> registration(@RequestBody User user, BindingResult bindingResult)  {
         indexValidator.validate(user, bindingResult);
@@ -103,11 +104,13 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @CrossOrigin
-    @ApiOperation(value = "User login ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiOperation(value = "Login User", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return a User",response = User.class),
-            @ApiResponse(code = 403, message = "login or password is incorrect", response = Error.class)})
+            @ApiResponse(code = 200, message = "Return a User", response = User.class),
+            @ApiResponse(code = 201, message = "Return a User", response = User.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
@@ -121,10 +124,11 @@ public class IndexController {
     }
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
-    @ApiOperation(value = "User logout ", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
+    @ApiOperation(value = "Logout User", produces = MediaType.APPLICATION_JSON_VALUE, response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Logout user", response = User.class),
-            @ApiResponse(code = 404, message = "user do not logged-in", response = Error.class)})
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class)})
     public @ResponseBody ResponseEntity<?> logout (HttpServletRequest request, HttpServletResponse response) {
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != "") {
             new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
@@ -136,8 +140,8 @@ public class IndexController {
         }
     }
 
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public /*@ResponseBody*/ String mainTest() {
+    /*@RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
+    public *//*@ResponseBody*//* String mainTest() {
 
         return "welcome";
     }
@@ -152,6 +156,6 @@ public class IndexController {
     public String as() {
 
         return "main";
-    }
+    }*/
 
 }

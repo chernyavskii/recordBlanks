@@ -24,7 +24,7 @@ import java.util.Set;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "agents")
-@Api(value = "AgentsControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(tags = "Agent", description = "APIs for working with agents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AgentController {
 
     @Autowired
@@ -36,13 +36,15 @@ public class AgentController {
     @Autowired
     AgentValidator agentValidator;
 
-    @CrossOrigin
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ApiOperation(value = "Get list of agents", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of agents", response = Agent.class, responseContainer = "Set"),
-            @ApiResponse(code = 404, message = "List of agents are empty", response = Error.class)})
-    public @ResponseBody ResponseEntity<?> getAgentsInJSON(Principal principal) {
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "List of agents are empty", response = Error.class)
+    })
+    public @ResponseBody ResponseEntity<?> getAllAgents(Principal principal) {
         Error error;
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
@@ -61,9 +63,11 @@ public class AgentController {
     @ApiOperation(value = "Get Agent by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Agent", response = Agent.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> getAgentByIdInJSON(Principal principal, @PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> getAgentById(Principal principal, @PathVariable("id") Long id) {
         Error error;
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
@@ -82,12 +86,14 @@ public class AgentController {
     @ApiOperation(value = "Add a new Agent", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return a new Agent", response = Agent.class),
-            @ApiResponse(code = 409, message = "'unp' already exist in system", response = Error.class),
-            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class),
-            @ApiResponse(code = 400, message = "'unp' a field must be 9 characters", response = Error.class),
-            @ApiResponse(code = 500, message = "server error", response = Error.class)
+            @ApiResponse(code = 201, message = "Return a new Agent", response = Agent.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> addAgentInJSON(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> addAgent(Principal principal, @RequestBody Agent agent, BindingResult bindingResult) {
         Error error;
         RequestWrapper requestWrapper = new RequestWrapper();
         requestWrapper.setAgent(agent);
@@ -130,9 +136,15 @@ public class AgentController {
     @ApiOperation(value = "Update Agent by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Agent",response = Agent.class),
-            @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
+            @ApiResponse(code = 201, message = "Return Agent", response = Agent.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Agent not found", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> updateAgentInJSON(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> updateAgent(Principal principal, @PathVariable("id") Long id, @RequestBody Agent agent, BindingResult bindingResult) {
         RequestWrapper requestWrapper = new RequestWrapper();
         agent.setId(id);
         requestWrapper.setAgent(agent);
@@ -186,11 +198,13 @@ public class AgentController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete Agent by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success response",response = Agent.class),
-            @ApiResponse(code = 404, message = "Agent not found", response = Error.class),
-
+            @ApiResponse(code = 200, message = "Deleted successfully",response = Agent.class),
+            @ApiResponse(code = 204, message = "No content",response = Agent.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Agent not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> deleteAgentInJSON(Principal principal, @PathVariable("id") Long id) {
+    public @ResponseBody ResponseEntity<?> deleteAgent(Principal principal, @PathVariable("id") Long id) {
         Error error;
         if (principal == null) {
             error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());

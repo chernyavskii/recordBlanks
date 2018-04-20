@@ -6,8 +6,13 @@ import com.model.Role;
 import com.service.driver.DriverService;
 import com.service.user.UserService;
 import com.validator.DriverValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -18,6 +23,7 @@ import java.util.Set;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "drivers")
+@Api(tags = "Driver", description = "APIs for working with drivers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DriverController {
 
     @Autowired
@@ -30,6 +36,13 @@ public class DriverController {
     DriverValidator driverValidator;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ApiOperation(value = "Get list of drivers", produces = MediaType.APPLICATION_JSON_VALUE, response = Driver.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return list of drivers", response = Driver.class, responseContainer = "Set"),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "List of drivers are empty", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> getAllDrivers(Principal principal)
     {
         Error error;
@@ -47,6 +60,13 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get Driver by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Driver.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Driver", response = Driver.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Driver not found", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> getDriverById(Principal principal, @PathVariable("id") Long id)
     {
         Error error;
@@ -64,6 +84,16 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ApiOperation(value = "Add a new Driver", produces = MediaType.APPLICATION_JSON_VALUE, response = Driver.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return a new Driver", response = Driver.class),
+            @ApiResponse(code = 201, message = "Return a new Driver", response = Driver.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> addDriver(Principal principal, @RequestBody Driver driver, BindingResult bindingResult)
     {
         Error error;
@@ -90,6 +120,16 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ApiOperation(value = "Update Driver by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Driver.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Driver",response = Driver.class),
+            @ApiResponse(code = 201, message = "Return a new Driver", response = Driver.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Driver not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> updateDriver(Principal principal, @PathVariable("id") Long id, @RequestBody Driver driver, BindingResult bindingResult)
     {
         Error error;
@@ -127,6 +167,14 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete Driver by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Driver.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Deleted successfully",response = Driver.class),
+            @ApiResponse(code = 204, message = "No content",response = Driver.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Driver not found", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> deleteDriver(Principal principal, @PathVariable("id") Long id)
     {
         Error error;

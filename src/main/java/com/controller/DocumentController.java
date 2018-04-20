@@ -25,7 +25,7 @@ import java.util.Set;
 @Controller
 @CrossOrigin
 @RequestMapping(value = "documents")
-@Api(value = "DocumentControllerAPI", produces = MediaType.APPLICATION_JSON_VALUE)
+@Api(tags = "Document", description = "APIs for working with documents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DocumentController
 {
     @Autowired
@@ -40,7 +40,10 @@ public class DocumentController
     @ApiOperation(value = "Get list of documents", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success response",response = Document.class, responseContainer = "Set"),
-            @ApiResponse(code = 404, message = "List of documents are empty", response = Error.class)})
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "List of documents are empty", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> getAllDocuments(Principal principal)
     {
         if (principal == null) {
@@ -57,9 +60,11 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    //@ApiOperation(value = "Get the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiOperation(value = "Get the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Document", response = Document.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
     public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam(value = "type", required = false) String type) throws IOException, java.lang.Exception {
@@ -67,37 +72,46 @@ public class DocumentController
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        Document document = documentService.getDocumentById(principal.getName(), id);
-        if(document == null){
-            Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
-            return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && documentService.getDocumentById(principal.getName(), id) != null))) {
+                Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
+                return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
+            }
+            else if(documentService.getDocument(id) == null) {
+                Error error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
+                return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
+            }
         }
-        else {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            if("pdf".equals(type)) {
-                responseHeaders.setContentLength(document.getDocumentPdf().length);
-                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
-                responseHeaders.setContentType(MediaType.valueOf("application/pdf"));
-                return new ResponseEntity<byte[]>(document.getDocumentPdf(), responseHeaders, HttpStatus.OK);
-            }
-            if("png".equals(type)) {
-                responseHeaders.setContentLength(document.getDocumentPng().length);
-                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
-                responseHeaders.setContentType(MediaType.valueOf("image/png"));
-                return new ResponseEntity<byte[]>(document.getDocumentPng(), responseHeaders, HttpStatus.OK);
-            }
-            responseHeaders.setContentLength(document.getDocumentExcel().length);
+        Document document = documentService.getDocument(id);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        if("pdf".equals(type)) {
+            responseHeaders.setContentLength(document.getDocumentPdf().length);
             responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
-            responseHeaders.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-            return new ResponseEntity<byte[]>(document.getDocumentExcel(), responseHeaders, HttpStatus.OK);
+            responseHeaders.setContentType(MediaType.valueOf("application/pdf"));
+            return new ResponseEntity<byte[]>(document.getDocumentPdf(), responseHeaders, HttpStatus.OK);
         }
+        if("png".equals(type)) {
+            responseHeaders.setContentLength(document.getDocumentPng().length);
+            responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+            responseHeaders.setContentType(MediaType.valueOf("image/png"));
+            return new ResponseEntity<byte[]>(document.getDocumentPng(), responseHeaders, HttpStatus.OK);
+        }
+        responseHeaders.setContentLength(document.getDocumentExcel().length);
+        responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+        responseHeaders.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        return new ResponseEntity<byte[]>(document.getDocumentExcel(), responseHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/tn", method = RequestMethod.POST)
-    @ApiOperation(value = "Write to file", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiOperation(value = "Create file TN", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return Document",response = Document.class),
-            @ApiResponse(code = 400, message = "'field' a field is empty", response = Error.class)
+            @ApiResponse(code = 201, message = "Return a new Document", response = Document.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> addDocumentTN(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException {
         if (principal == null) {
@@ -132,7 +146,10 @@ public class DocumentController
     @ApiOperation(value = "Delete the Document by ID", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Deleted successfully",response = Document.class),
-            @ApiResponse(code = 404, message = "Document not found", response = Error.class),
+            @ApiResponse(code = 204, message = "No content",response = Document.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
     public @ResponseBody ResponseEntity<?> deleteDocument(Principal principal, @PathVariable("id") Long id) throws java.io.IOException {
         if (principal == null) {
@@ -153,6 +170,16 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/ttn", method = RequestMethod.POST)
+    @ApiOperation(value = "Create file TTN", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Document",response = Document.class),
+            @ApiResponse(code = 201, message = "Return a new Document", response = Document.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> addDocumentTTN(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
         if (principal == null) {
@@ -184,6 +211,16 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/aspr", method = RequestMethod.POST)
+    @ApiOperation(value = "Create file ASPR", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Document",response = Document.class),
+            @ApiResponse(code = 201, message = "Return a new Document", response = Document.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> addDocumentASPR(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
         if (principal == null) {
@@ -215,6 +252,16 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/sf", method = RequestMethod.POST)
+    @ApiOperation(value = "Create file SF", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Document",response = Document.class),
+            @ApiResponse(code = 201, message = "Return a new Document", response = Document.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class),
+            @ApiResponse(code = 500, message = "Server error", response = Error.class)
+    })
     public @ResponseBody ResponseEntity<?> addDocumentSF(Principal principal, @RequestBody RequestWrapper requestWrapper, BindingResult bindingResult) throws IOException
     {
         if (principal == null) {
@@ -246,7 +293,16 @@ public class DocumentController
     }
 
     @RequestMapping(value = "/convert/{id}", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<?> addPdf(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> documents) throws IOException
+    @ApiOperation(value = "Create PDF and PNG", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return Document",response = Document.class),
+            @ApiResponse(code = 201, message = "Return a new Document", response = Document.class),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
+            @ApiResponse(code = 404, message = "Not found", response = Error.class)
+    })
+    public @ResponseBody ResponseEntity<?> addPdfPng(Principal principal, @PathVariable("id") Long id, @RequestBody Map<String, String> documents) throws IOException
     {
         Error error;
         if (principal == null) {
