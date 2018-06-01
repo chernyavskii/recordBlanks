@@ -41,6 +41,12 @@ public class AgentServiceImpl implements AgentService {
         return agentDAO.findOne(id);
     }
 
+    public Agent deleteAgent(String username, Long id) {
+        Agent agent = agentDAO.findOne(id);
+        agentDAO.delete(id);
+        return  agent;
+    }
+
     public Agent addAgent(String username, Agent agent) {
         Agent agnt = new Agent();
         agnt.setFirstName(agent.getFirstName());
@@ -57,12 +63,6 @@ public class AgentServiceImpl implements AgentService {
         agnt.setPhone(agent.getPhone());
         agnt.setUser(userDAO.findByUsername(username));
         return agentDAO.save(agnt);
-    }
-
-    public Agent deleteAgent(String username, Long id) {
-        Agent agent = agentDAO.findOne(id);
-        agentDAO.delete(id);
-        return  agent;
     }
 
     public Agent updateAgent(String username, Long id, Agent agent) {

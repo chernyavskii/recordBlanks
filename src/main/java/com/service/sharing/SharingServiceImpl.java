@@ -1,9 +1,10 @@
 package com.service.sharing;
 
-import com.dao.*;
+import com.dao.AgentDAO;
+import com.dao.DocumentDAO;
+import com.dao.UserDAO;
 import com.model.Agent;
 import com.model.Document;
-import com.model.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +65,7 @@ public class SharingServiceImpl implements SharingService {
     }
 
     public Document deleteSharedDocument(String username, Long id) {
-        for(Document doc : userDAO.findByUsername(username).getDocuments()) {
+        /*for(Document doc : userDAO.findByUsername(username).getDocuments()) {
             if(id == doc.getId()) {
                 Document document = documentDAO.findOne(id);
                 document.setAgent(null);
@@ -72,6 +73,10 @@ public class SharingServiceImpl implements SharingService {
                 return document;
             }
         }
-        return null;
+        return null;*/
+        Document document = getSharedDocumentById(username, id);
+        document.setAgent(null);
+        documentDAO.save(document);
+        return document;
     }
 }

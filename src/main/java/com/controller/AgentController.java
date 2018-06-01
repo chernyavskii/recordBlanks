@@ -1,10 +1,10 @@
 package com.controller;
 
+import com.errors.Error;
 import com.model.Agent;
 import com.model.RequestWrapper;
 import com.model.Role;
 import com.service.agent.AgentService;
-import com.errors.Error;
 import com.service.user.UserService;
 import com.validator.AgentValidator;
 import io.swagger.annotations.Api;
@@ -18,26 +18,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.Set;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "agents")
+@RequestMapping(value = "api/v1/agents")
 @Api(tags = "Agent", description = "APIs for working with agents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AgentController {
-
     @Autowired
     private AgentService agentService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     AgentValidator agentValidator;
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ApiOperation(value = "Get list of agents", produces = MediaType.APPLICATION_JSON_VALUE, response = Agent.class, responseContainer = "List")
+    @ApiOperation(value = "Get list of agents", produces = MediaType.APPLICATION_JSON_VALUE,
+                  response = Agent.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Return list of agents", response = Agent.class, responseContainer = "Set"),
             @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
@@ -168,16 +166,16 @@ public class AgentController {
         if(bindingResult.hasErrors()) {
             switch (bindingResult.getFieldError().getDefaultMessage()) {
                 case Error.FIO_INCORRECT_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.UNP_BIK_LENGTH_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.RS_KS_LENGTH_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.PHONE_INCORRECT_MESSAGE:
-                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.DUPLICATED_ENTITY_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.CONFLICT.value());

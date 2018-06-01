@@ -1,13 +1,12 @@
 package com.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 public class User {
     private Long id;
+    private String email;
     private String username;
     private String password;
     private String confirmPassword;
@@ -36,6 +35,16 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Basic

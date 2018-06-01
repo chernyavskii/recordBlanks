@@ -1,10 +1,10 @@
 package com.controller;
 
+import com.errors.Error;
 import com.model.RequestWrapper;
 import com.model.Role;
 import com.model.User;
 import com.service.user.UserService;
-import com.errors.Error;
 import com.validator.UserValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,13 +18,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "users")
+@RequestMapping(value = "api/v1/users")
 @Api(tags = "User", description = "APIs for working with users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
@@ -150,6 +151,9 @@ public class UserController {
                 case Error.PHONE_INCORRECT_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.EMAIL_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 case Error.WRONG_ROLE_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
@@ -209,12 +213,12 @@ public class UserController {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
-        for(Role role : userService.findByUsername(principal.getName()).getRoles()) {
-            if(!(role.getName().equals("ROLE_ADMIN") || (role.getName().equals("ROLE_USER") && id == userService.findByUsername(principal.getName()).getId()))) {
+        for(Role r : userService.findByUsername(principal.getName()).getRoles()) {
+            if(!(r.getName().equals("ROLE_ADMIN") || (r.getName().equals("ROLE_USER") && id == userService.findByUsername(principal.getName()).getId()))) {
                 Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
                 return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
-            else if(role.getName().equals("ROLE_USER") && "ROLE_ADMIN".equals(requestWrapper.getRole())) {
+            else if(r.getName().equals("ROLE_USER") && "ROLE_ADMIN".equals(requestWrapper.getRole())) {
                 Error error = new Error(Error.NO_ACCESS_MESSAGE, Error.NO_ACCESS_STATUS, HttpStatus.FORBIDDEN.value());
                 return new ResponseEntity<Error>(error, HttpStatus.FORBIDDEN);
             }
@@ -250,6 +254,9 @@ public class UserController {
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.PHONE_INCORRECT_MESSAGE:
+                        error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                        return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                    case Error.EMAIL_INCORRECT_MESSAGE:
                         error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                         return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                     case Error.WRONG_ROLE_MESSAGE:

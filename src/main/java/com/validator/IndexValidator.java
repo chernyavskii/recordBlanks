@@ -1,14 +1,15 @@
 package com.validator;
 
 import com.errors.Error;
-import com.model.RequestWrapper;
 import com.model.User;
 import com.service.user.UserService;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
 
 @Component
 public class IndexValidator implements Validator {
@@ -25,6 +26,7 @@ public class IndexValidator implements Validator {
     public void validate(Object o, Errors errors) {
         User user = (User) o;
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"email",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"confirmPassword", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
@@ -47,6 +49,9 @@ public class IndexValidator implements Validator {
         if(!user.getPassword().equals(user.getConfirmPassword())) {
             errors.rejectValue("password", Error.PASSWORD_DO_NOT_MATCH_STATUS, Error.PASSWORD_DO_NOT_MATCH_MESSAGE);
         }
+        if(userService.checkEmail(user,"post").booleanValue()) {
+            errors.rejectValue("email", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+        }
         if(userService.checkUsername(user, "post").booleanValue()) {
             errors.rejectValue("username", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
         }
@@ -63,6 +68,9 @@ public class IndexValidator implements Validator {
             errors.rejectValue("bik", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
         }
 
+        if(!EmailValidator.getInstance().isValid(user.getEmail())) {
+            errors.rejectValue("email", Error.EMAIL_INCORRECT_STATUS, Error.EMAIL_INCORRECT_MESSAGE);
+        }
         if(user.getUsername().length() < 5){
             errors.rejectValue("username", Error.USERNAME_LENGTH_STATUS, Error.USERNAME_LENGTH_MESSAGE);
         }

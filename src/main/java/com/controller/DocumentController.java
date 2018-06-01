@@ -1,10 +1,10 @@
 package com.controller;
 
+import com.errors.Error;
 import com.model.Document;
 import com.model.RequestWrapper;
 import com.model.Role;
 import com.service.document.DocumentService;
-import com.errors.Error;
 import com.service.user.UserService;
 import com.validator.DocumentValidator;
 import io.swagger.annotations.Api;
@@ -13,18 +13,22 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.io.*;
+
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Set;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "documents")
+@RequestMapping(value = "api/v1/documents")
 @Api(tags = "Document", description = "APIs for working with documents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DocumentController
 {
@@ -34,10 +38,12 @@ public class DocumentController
     @Autowired
     private UserService userService;
 
-    @Autowired DocumentValidator documentValidator;
+    @Autowired
+    DocumentValidator documentValidator;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @ApiOperation(value = "Get list of documents", produces = MediaType.APPLICATION_JSON_VALUE, response = Document.class, responseContainer = "List")
+    @ApiOperation(value = "Get list of documents", produces = MediaType.APPLICATION_JSON_VALUE,
+                  response = Document.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success response",response = Document.class, responseContainer = "Set"),
             @ApiResponse(code = 401, message = "User is not authorized", response = Error.class),
@@ -67,7 +73,7 @@ public class DocumentController
             @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam(value = "type", required = false) String type) throws IOException, java.lang.Exception {
+    public ResponseEntity<?> getDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam(value = "type", required = false) String type) throws IOException, Exception {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
@@ -151,7 +157,7 @@ public class DocumentController
             @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Document not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> deleteDocument(Principal principal, @PathVariable("id") Long id) throws java.io.IOException {
+    public @ResponseBody ResponseEntity<?> deleteDocument(Principal principal, @PathVariable("id") Long id) throws IOException {
         if (principal == null) {
             Error error = new Error(Error.UNAUTHORIZED_MESSAGE, Error.UNAUTHORIZED_STATUS, HttpStatus.UNAUTHORIZED.value());
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);

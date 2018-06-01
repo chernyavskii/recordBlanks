@@ -4,17 +4,15 @@ import com.dao.AgentDAO;
 import com.dao.DocumentDAO;
 import com.dao.RoleDAO;
 import com.dao.UserDAO;
-import com.model.Agent;
-import com.model.Document;
 import com.model.Role;
 import com.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 @Transactional
@@ -74,11 +72,12 @@ public class UserServiceImpl implements UserService {
         roleDAO.delete(user.getRoles());
         documentDAO.delete(user.getDocuments());
         userDAO.delete(id);
-        return "{\"success\":true}";
+        return user;
     }
 
     public User updateById(User user, Long id, String r) {
         User findUser = userDAO.findOne(id);
+        findUser.setEmail(user.getEmail());
         findUser.setUsername(user.getUsername());
         findUser.setFirstName(user.getFirstName());
         findUser.setMiddleName(user.getMiddleName());
@@ -109,6 +108,32 @@ public class UserServiceImpl implements UserService {
 
     public User findByUsername(String username) {
         return userDAO.findByUsername(username);
+    }
+
+    public Boolean checkEmail(User usr, String method)
+    {
+        Iterator<User> iterator = userDAO.findAll().iterator();
+        for(User user : userDAO.findAll()){
+            if(method.equals("post")) {
+                if (user.getEmail().equals(usr.getEmail())) {
+                    return true;
+                } else {
+                    iterator.next();
+                }
+            }
+            if(method.equals("update")) {
+                if(user.getId() == usr.getId()) {
+                    iterator.next();
+                }
+                else if(user.getEmail().equals(usr.getEmail())){
+                    return true;
+                }
+                else{
+                    iterator.next();
+                }
+            }
+        }
+        return false;
     }
 
     public Boolean checkUsername(User usr, String method)

@@ -17,12 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.Set;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "drivers")
+@RequestMapping(value = "api/v1/drivers")
 @Api(tags = "Driver", description = "APIs for working with drivers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DriverController {
 

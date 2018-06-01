@@ -71,6 +71,10 @@ public class Error
     public static final String USER_IS_NOT_REGISTERED_MESSAGE = "user is not registered";
     public static final String USER_IS_NOT_REGISTERED_STATUS = "404 not found";
 
+    /*EMAIL SERVICE*/
+    public static final String EMAIL_INCORRECT_MESSAGE = "email is incorrect, example: user@gmail.com";
+    public static final String EMAIL_INCORRECT_STATUS = "400 bad request";
+
     public Error(){}
 
     public Error(String message, int code)

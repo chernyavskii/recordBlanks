@@ -4,6 +4,7 @@ import com.errors.Error;
 import com.model.RequestWrapper;
 import com.model.User;
 import com.service.user.UserService;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -39,6 +40,7 @@ public class UserValidator implements Validator {
         String role = requestWrapper.getRole();
         user.setId(user_id);
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors,"user.email",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"user.username",  Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"user.address", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"user.firstName", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
@@ -58,6 +60,9 @@ public class UserValidator implements Validator {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "user.password", Error.EMPTY_FIELD_STATUS, Error.EMPTY_FIELD_MESSAGE);
             if(user.getPassword().length() < 8){
                 errors.rejectValue("user.password", Error.PASSWORD_LENGTH_STATUS, Error.PASSWORD_LENGTH_MESSAGE);
+            }
+            if(userService.checkEmail(user,"post").booleanValue()) {
+                errors.rejectValue("user.email", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
             }
             if(userService.checkUsername(user, "post").booleanValue()) {
                 errors.rejectValue("user.username", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
@@ -80,6 +85,9 @@ public class UserValidator implements Validator {
         }
 
         if(method.equals("update")) {
+            if(userService.checkEmail(user,"update").booleanValue()) {
+                errors.rejectValue("user.email", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
+            }
             if(userService.checkUsername(user, "update").booleanValue()) {
                 errors.rejectValue("user.username", Error.DUPLICATED_ENTITY_STATUS, Error.DUPLICATED_ENTITY_MESSAGE);
             }
@@ -100,6 +108,9 @@ public class UserValidator implements Validator {
             }
         }
 
+        if(!EmailValidator.getInstance().isValid(user.getEmail())) {
+            errors.rejectValue("user.email", Error.EMAIL_INCORRECT_STATUS, Error.EMAIL_INCORRECT_MESSAGE);
+        }
         if(user.getUsername().length() < 5){
             errors.rejectValue("user.username", Error.USERNAME_LENGTH_STATUS, Error.USERNAME_LENGTH_MESSAGE);
         }

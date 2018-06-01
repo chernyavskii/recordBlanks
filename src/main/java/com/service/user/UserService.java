@@ -13,6 +13,7 @@ public interface UserService {
     User updateById(User user, Long id, String r);
     User updatePassword(String username, String newPassword);
     User findByUsername(String username);
+    Boolean checkEmail(User usr, String method);
     Boolean checkUsername(User usr, String method);
     Boolean checkUnp(User usr, String method);
     Boolean checkRs(User usr, String method);

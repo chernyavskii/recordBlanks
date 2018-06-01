@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import java.util.Set;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "sharing")
+@RequestMapping(value = "api/v1/sharing")
 @Api(tags = "Sharing", description = "APIs for working with shared documents", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SharingController {
 
@@ -64,7 +65,7 @@ public class SharingController {
             @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Shared Document not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> getSharedDocumentById(Principal principal, @PathVariable("id") Long id)
+    public @ResponseBody ResponseEntity<?> getSharedDocumentById(Principal principal, @PathVariable("id") Long id, @RequestParam(value = "type", required = false) String type)
     {
         Error error;
         if (principal == null) {
@@ -72,11 +73,27 @@ public class SharingController {
             return new ResponseEntity<Error>(error, HttpStatus.UNAUTHORIZED);
         }
         Document document = sharingService.getSharedDocumentById(principal.getName(), id);
+        HttpHeaders responseHeaders = new HttpHeaders();
         if (document == null) {
             error = new Error(Error.ENTITY_NOT_FOUND_MESSAGE, Error.ENTITY_NOT_FOUND_STATUS, HttpStatus.NOT_FOUND.value());
             return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(document, HttpStatus.OK);
+            if("pdf".equals(type)) {
+                responseHeaders.setContentLength(document.getDocumentPdf().length);
+                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+                responseHeaders.setContentType(MediaType.valueOf("application/pdf"));
+                return new ResponseEntity<byte[]>(document.getDocumentPdf(), responseHeaders, HttpStatus.OK);
+            }
+            if("png".equals(type)) {
+                responseHeaders.setContentLength(document.getDocumentPng().length);
+                responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+                responseHeaders.setContentType(MediaType.valueOf("image/png"));
+                return new ResponseEntity<byte[]>(document.getDocumentPng(), responseHeaders, HttpStatus.OK);
+            }
+            responseHeaders.setContentLength(document.getDocumentExcel().length);
+            responseHeaders.set("Content-disposition", "attachment; filename=" + document.getName());
+            responseHeaders.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            return new ResponseEntity<byte[]>(document.getDocumentExcel(), responseHeaders, HttpStatus.OK);
         }
     }
 

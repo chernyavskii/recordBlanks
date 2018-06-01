@@ -1,11 +1,10 @@
 package com.controller;
 
+import com.errors.Error;
 import com.model.User;
 import com.service.security.SecurityService;
 import com.service.user.UserService;
-import com.errors.Error;
 import com.validator.IndexValidator;
-import com.validator.UserValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,7 +25,7 @@ import java.security.Principal;
 
 @Controller
 @CrossOrigin
-@RequestMapping(value = "/")
+@RequestMapping(value = "/api/v1/")
 @Api(tags = "Index", description = "APIs for working with accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class IndexController {
 
@@ -83,6 +82,9 @@ public class IndexController {
                 case Error.PHONE_INCORRECT_MESSAGE:
                     error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
                     return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+                case Error.EMAIL_INCORRECT_MESSAGE:
+                    error = new Error(" '" + bindingResult.getFieldError().getField() + "'" + ": " + bindingResult.getFieldError().getDefaultMessage(), bindingResult.getFieldError().getCode(), HttpStatus.BAD_REQUEST.value());
+                    return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
                 default :
                     error = new Error(Error.SERVER_ERROR_MESSAGE, Error.SERVER_ERROR_STATUS, HttpStatus.INTERNAL_SERVER_ERROR.value());
                     return new ResponseEntity<Error>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,7 +113,7 @@ public class IndexController {
             @ApiResponse(code = 403, message = "Forbidden", response = Error.class),
             @ApiResponse(code = 404, message = "Not found", response = Error.class)
     })
-    public @ResponseBody ResponseEntity<?> login(@RequestBody User user,  BindingResult bindingResult) {
+    public @ResponseBody ResponseEntity<?> login(@RequestBody User user, BindingResult bindingResult) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
         if(SecurityContextHolder.getContext().getAuthentication().getCredentials() != ""){
             //return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
